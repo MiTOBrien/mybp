@@ -14,7 +14,9 @@
   },
   "dependencies": {
     "@netlify/neon": "^0.1.2",
+    "bcryptjs": "^3.0.3",
     "drizzle-orm": "^0.45.1",
+    "jsonwebtoken": "^9.0.3",
     "pinia": "^3.0.4",
     "vue": "^3.5.27",
     "vue-router": "^5.0.1"
