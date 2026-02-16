@@ -1,11 +1,25 @@
-<script setup></script>
+<script setup>
+import { RouterView } from 'vue-router'
+import HeaderView from './views/HeaderView.vue'
+import FooterView from './views/FooterView.vue'
+</script>
 
 <template>
-  <h1>You did it!</h1>
-  <p>
-    Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
-    documentation
-  </p>
+    <header>
+    <div class="wrapper">
+      <HeaderView />
+    </div>
+  </header>
+  <main>
+    <div class="wrapper">
+      <RouterView />
+    </div>
+  </main>
+  <footer>
+    <div class="wrapper">
+      <FooterView />  
+      </div>
+  </footer>
 </template>
 
 <style scoped></style>

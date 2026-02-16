@@ -1,0 +1,29 @@
+@import './header.css';
+@import './modal.css';
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: 'Nunito', system-ui, sans-serif;
+}
+
+main {
+  padding-top: 60px;
+}
+
+h1,
+h2 {
+  text-align: center;
+  color: var(--color-primary);
+}
