@@ -1,4 +1,5 @@
 import { integer, pgTable, varchar, serial, timestamp, text } from 'drizzle-orm/pg-core';
+import { t } from 'vue-router/dist/index-Cu9B0wDz.mjs';
 
 export const posts = pgTable('posts', {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
@@ -18,11 +19,10 @@ export const bloodpressure = pgTable('bloodpressure', {
   user_id: integer('user_id')
     .notNull()
     .references(() => users.id),
-  systolic1: integer('systolic1').notNull(),
-  diastolic1: integer('diastolic1').notNull(),
-  heart_rate1: integer('heart_rate1').notNull(),
-  systolic2: integer('systolic2').notNull(),
-  diastolic2: integer('diastolic2').notNull(),
-  heart_rate2: integer('heart_rate2').notNull(),
+  reading_time: timestamp('reading_time').defaultNow().notNull(),
+  systolic: integer('systolic').notNull(),
+  diastolic: integer('diastolic').notNull(),
+  heart_rate: integer('heart_rate').notNull(),
+  period: varchar('period', { length: 10 }), // 'AM' | 'PM'
   created_at: timestamp('created_at').defaultNow(),
-})
+});
