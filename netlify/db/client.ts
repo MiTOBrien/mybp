@@ -1,11 +1,5 @@
-import { drizzle } from "drizzle-orm/node-postgres";
-import pkg from "pg";
+import { neon } from "@netlify/neon";
+import { drizzle } from "drizzle-orm/neon-http";
 
-const { Pool } = pkg;
-
-const pool = new Pool({
-  connectionString: process.env.NETLIFY_DATABASE_URL,
-  ssl: { rejectUnauthorized: false }
-});
-
-export const db = drizzle(pool);
+const sql = neon(process.env.NETLIFY_DATABASE_URL!);
+export const db = drizzle(sql);
