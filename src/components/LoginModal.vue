@@ -46,6 +46,7 @@ const login = async () => {
         roles: Array.isArray(user.roles) ? user.roles : [],
       }
       userStore.setUser(fullUser)
+      await userStore.fetchReadings()
       userStore.showLoginModal = false
     } else {
       const errorMessage =

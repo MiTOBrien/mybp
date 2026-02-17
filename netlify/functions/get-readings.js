@@ -2,16 +2,15 @@ import { neon } from '@netlify/neon'
 import { drizzle } from 'drizzle-orm/neon-http'
 import jwt from 'jsonwebtoken'
 import { bloodpressure } from '../../db/schema.js'
+import { eq, desc } from 'drizzle-orm'
 
 export default async (req) => {
   try {
-    // 1. Check for Authorization header
     const authHeader = req.headers.get('authorization')
     if (!authHeader) {
       return Response.json({ error: 'Missing Authorization header' }, { status: 401 })
     }
 
-    // 2. Extract and verify JWT
     const token = authHeader.replace('Bearer ', '')
     let payload
 
@@ -23,32 +22,18 @@ export default async (req) => {
 
     const userId = payload.userId
 
-    // 3. Parse request body
-    let { reading_time, systolic, diastolic, heart_rate } = await req.json()
-
-    if (!reading_time || !systolic || !diastolic || !heart_rate) {
-      return Response.json({ error: 'Missing required fields' }, { status: 400 })
-    }
-
-    // Convert reading_time string → Date object
-    // reading_time = new Date(reading_time)
-
-    // 4. Connect to database
     const sql = neon(process.env.NETLIFY_DATABASE_URL)
     const db = drizzle(sql)
 
-    // 5. Insert the reading
-    await db.insert(bloodpressure).values({
-      user_id: userId,
-      reading_time,
-      systolic,
-      diastolic,
-      heart_rate,
-    })
+    const readings = await db
+      .select()
+      .from(bloodpressure)
+      .where(eq(bloodpressure.user_id, userId))
+      .orderBy(desc(bloodpressure.reading_time))
 
-    return Response.json({ ok: true })
+    return Response.json({ readings })
   } catch (err) {
-    console.error('Add BP error:', err)
+    console.error('Get readings error:', err)
     return Response.json({ error: 'Server error' }, { status: 500 })
   }
 }
