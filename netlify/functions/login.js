@@ -1,4 +1,3 @@
-console.log('LOGIN FUNCTION LOADED')
 import { db } from '../db/client.js'
 import { users } from '../../db/schema.js'
 import bcrypt from 'bcryptjs'
@@ -21,9 +20,6 @@ export default async function (request) {
     const parsedUser = body.user || {}
     const email = parsedUser.email
     const password = parsedUser.password
-
-    console.log('PARSED EMAIL:', email)
-    console.log('PARSED PASSWORD:', password)
 
     if (!email || !password) {
       return new Response(JSON.stringify({ error: 'Email and password required' }), { status: 400 })

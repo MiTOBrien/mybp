@@ -11,9 +11,7 @@ const name = computed(() => userStore.name)
 
 const openLoginModal = () => {
   userStore.showLoginModal = true
-  console.log('Modal state:', userStore.showLoginModal)
 }
-console.log('Modal state:', userStore.showLoginModal)
 
 const handleLogout = () => {
   userStore.logout()
@@ -38,30 +36,15 @@ const closeMenu = () => {
 
     <!-- Desktop navigation -->
     <div class="right-nav desktop-nav">
-      <RouterLink class="nav-link" to="/stash">Yarn Stash</RouterLink>
-      <RouterLink class="nav-link" to="/patterns">Patterns</RouterLink>
       <div class="navbar-end">
         <div v-if="userStore.isLoggedIn" class="navbar-item">
-          Welcome, {{ name }}
+          Welcome, {{ userStore.email }}!
           <button @click="handleLogout" class="button nav-button is-light">Logout</button>
         </div>
         <div v-else class="navbar-item">
           <button @click="openLoginModal" class="button nav-button is-primary">Login</button>
         </div>
       </div>
-    </div>
-
-    <!-- Mobile hamburger button -->
-    <button class="hamburger" @click="toggleMenu" :class="{ active: isMenuOpen }">
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
-
-    <!-- Mobile navigation menu -->
-    <div class="mobile-nav" :class="{ open: isMenuOpen }">
-      <RouterLink class="nav-link" to="/stash" @click="closeMenu">Yarn Stash</RouterLink>
-      <RouterLink class="nav-link" to="/patterns" @click="closeMenu">Patterns</RouterLink>
     </div>
   </nav>
 

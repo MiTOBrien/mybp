@@ -10,9 +10,6 @@ import { formatDateKey } from '@/utils/formatDateKey'
 const userStore = useUserStore()
 const grouped = computed(() => groupReadings(userStore.readings))
 
-console.log("Raw readings:", userStore.readings)
-console.log("Grouped:", grouped.value)
-
 const openBloodPressureModal = () => {
   userStore.showBpModal = true
 }
