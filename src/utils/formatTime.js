@@ -1,4 +1,9 @@
+import { parseLocalDateTime } from './parseLocalDateTime'
+
 export function formatTime(ts) {
-  const d = new Date(ts)
-  return d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
+  const d = parseLocalDateTime(ts)
+  return d.toLocaleTimeString([], {
+    hour: 'numeric',
+    minute: '2-digit'
+  })
 }

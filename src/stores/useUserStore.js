@@ -11,6 +11,8 @@ export const useUserStore = defineStore('user', () => {
   const isLoggedIn = ref(false)
   const showLoginModal = ref(false)
   const showRegisterModal = ref(false)
+
+  // NEW: readings state
   const readings = ref([])
 
   // Actions
@@ -24,7 +26,12 @@ export const useUserStore = defineStore('user', () => {
     showLoginModal.value = false
     showRegisterModal.value = false
 
-    localStorage.setItem('user', JSON.stringify({ ...userData }))
+    localStorage.setItem(
+      'user',
+      JSON.stringify({
+        ...userData,
+      }),
+    )
   }
 
   function setUser(userData) {
@@ -41,37 +48,40 @@ export const useUserStore = defineStore('user', () => {
     email.value = ''
     name.value = ''
     isLoggedIn.value = false
-    readings.value = []
+    readings.value = [] // clear readings on logout
 
     localStorage.removeItem('user')
   }
 
-  async function restoreFromLocalStorage() {
+  // NEW: fetchReadings action
+  async function fetchReadings() {
+    try {
+      const res = await fetch('/.netlify/functions/get-readings', {
+        headers: {
+          Authorization: `Bearer ${token.value}`,
+        },
+      })
+
+      if (!res.ok) {
+        throw new Error('Failed to fetch readings')
+      }
+
+      const data = await res.json()
+      readings.value = data.readings || []
+    } catch (err) {
+      console.error('Error fetching readings:', err)
+      readings.value = []
+    }
+  }
+
+  function restoreFromLocalStorage() {
     const stored = localStorage.getItem('user')
     if (stored) {
       const userData = JSON.parse(stored)
       login(userData)
-      await fetchReadings()
-    }
-  }
 
-  async function fetchReadings() {
-    if (!token.value) return
-
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_APP_API_BASE_URL}/get-readings`,
-        {
-          headers: {
-            Authorization: `Bearer ${token.value}`,
-          },
-        }
-      )
-
-      const result = await response.json()
-      readings.value = result.readings || []
-    } catch (err) {
-      console.error("Error fetching readings:", err)
+      // FIX: fetchShows() was wrong — should be fetchReadings()
+      fetchReadings()
     }
   }
 

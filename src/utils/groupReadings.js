@@ -1,17 +1,26 @@
+import { parseLocalDateTime } from './parseLocalDateTime'
+
 export function groupReadings(readings) {
   const groups = {}
 
   for (const r of readings) {
-    const date = r.reading_time.split('T')[0]
+    const d = parseLocalDateTime(r.reading_time)
 
-    if (!groups[date]) {
-      groups[date] = { am: [], pm: [] }
+    // Build a YYYY-MM-DD key from the *local* date
+    const dateKey = [
+      d.getFullYear(),
+      String(d.getMonth() + 1).padStart(2, '0'),
+      String(d.getDate()).padStart(2, '0'),
+    ].join('-')
+
+    if (!groups[dateKey]) {
+      groups[dateKey] = { am: [], pm: [] }
     }
 
-    const hour = new Date(r.reading_time).getHours()
+    const hour = d.getHours()
     const period = hour < 12 ? 'am' : 'pm'
 
-    groups[date][period].push(r)
+    groups[dateKey][period].push(r)
   }
 
   return groups
