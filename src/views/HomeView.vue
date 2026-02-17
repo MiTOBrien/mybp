@@ -4,9 +4,14 @@ import { useUserStore } from '@/stores/useUserStore'
 import BloodPressureModal from '@/components/BloodPressureModal.vue'
 import { groupReadings } from '@/utils/groupReadings'
 import { formatTime } from '@/utils/formatTime'
+// import { parseLocalDateTime } from '@/utils/parseLocalDateTime'
+import { formatDateKey } from '@/utils/formatDateKey'
 
 const userStore = useUserStore()
 const grouped = computed(() => groupReadings(userStore.readings))
+
+console.log("Raw readings:", userStore.readings)
+console.log("Grouped:", grouped.value)
 
 const openBloodPressureModal = () => {
   userStore.showBpModal = true
@@ -39,7 +44,7 @@ const openBloodPressureModal = () => {
   </button>
 
   <div v-for="(day, date) in grouped" :key="date" class="day-row">
-    <h3>{{ new Date(date).toLocaleDateString() }}</h3>
+    <h3 v-if="date">{{ formatDateKey(date) }}</h3>
 
     <!-- Morning -->
     <div v-if="day.am.length" class="period-row">
