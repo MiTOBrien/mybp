@@ -42,7 +42,6 @@ const register = async () => {
   }
 
   try {
-    console.log('Registering user:', email.value) // Debug log
     console.log('API Base URL:', API_BASE_URL) // Debug log
     const response = await fetch(`${API_BASE_URL}/register`, {
       method: 'POST',
