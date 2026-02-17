@@ -13,7 +13,7 @@ export const bloodpressure = pgTable('bloodpressure', {
   user_id: integer('user_id')
     .notNull()
     .references(() => users.id),
-  reading_time: timestamp('reading_time').defaultNow().notNull(),
+  reading_time: varchar('reading_time', { length: 30 }).notNull(),
   systolic: integer('systolic').notNull(),
   diastolic: integer('diastolic').notNull(),
   heart_rate: integer('heart_rate').notNull(),
