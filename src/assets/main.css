@@ -20,8 +20,8 @@ body {
 
 main {
   padding-top: 60px;
-  padding-left: 20px;
-  padding-right: 20px;
+  padding-left: 40px;
+  padding-right: 40px;
 }
 
 h1,
@@ -30,9 +30,82 @@ h2 {
   color: var(--color-primary);
 }
 
-.reading-block {
+/* Blood pressure card styling */
+.day-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 16px;
+  margin: 20px 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.day-header {
+  margin-bottom: 12px;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.period-row {
+  margin-bottom: 12px;
+}
+
+.period-label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.reading-row {
   display: flex;
-  gap: 0.75rem; /* space between items */
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.reading-item {
+  display: flex;
+  gap: 8px;
   align-items: center;
-  margin: 0.25rem 0;
+  background: #f7f7f7;
+  padding: 6px 10px;
+  border-radius: 8px;
+}
+
+.reading-time {
+  font-weight: 600;
+}
+
+.reading-bp {
+  font-weight: 600;
+}
+
+.reading-hr {
+  color: #666;
+}
+
+/* Blood pressure range styling */
+.bp-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* Normal */
+.bp-green {
+  background-color: #4caf50;
+}
+
+/* Elevated */
+.bp-yellow {
+  background-color: #ffeb3b;
+}
+
+/* Highly elevated */
+.bp-orange {
+  background-color: #ff9800;
+}
+
+/* Extreme */
+.bp-red {
+  background-color: #f44336;
 }

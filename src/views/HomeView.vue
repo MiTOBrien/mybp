@@ -4,8 +4,8 @@ import { useUserStore } from '@/stores/useUserStore'
 import BloodPressureModal from '@/components/BloodPressureModal.vue'
 import { groupReadings } from '@/utils/groupReadings'
 import { formatTime } from '@/utils/formatTime'
-// import { parseLocalDateTime } from '@/utils/parseLocalDateTime'
 import { formatDateKey } from '@/utils/formatDateKey'
+import { getBpColor } from '@/utils/bpColor'
 
 const userStore = useUserStore()
 const grouped = computed(() => groupReadings(userStore.readings))
@@ -40,26 +40,32 @@ const openBloodPressureModal = () => {
     Add Blood Pressure Reading
   </button>
 
-  <div v-for="(day, date) in grouped" :key="date" class="day-row">
-    <h3 v-if="date">{{ formatDateKey(date) }}</h3>
+  <div v-for="(day, date) in grouped" :key="date" class="day-card">
+    <h3 class="day-header">{{ formatDateKey(date) }}</h3>
 
     <!-- Morning -->
     <div v-if="day.am.length" class="period-row">
-      <strong>Morning</strong>
-      <div class="reading-block" v-for="(r, i) in day.am" :key="i">
-        <span>{{ formatTime(r.reading_time) }}</span>
-        <span>{{ r.systolic }}/{{ r.diastolic }}</span>
-        <span>{{ r.heart_rate }} bpm</span>
+      <strong class="period-label">Morning</strong>
+      <div class="reading-row">
+        <div v-for="(r, i) in day.am" :key="i" class="reading-item">
+          <span :class="['bp-dot', getBpColor(r.systolic, r.diastolic)]"></span>
+          <span class="reading-time">{{ formatTime(r.reading_time) }}</span>
+          <span class="reading-bp">{{ r.systolic }}/{{ r.diastolic }}</span>
+          <span class="reading-hr">{{ r.heart_rate }} bpm</span>
+        </div>
       </div>
     </div>
 
     <!-- Evening -->
     <div v-if="day.pm.length" class="period-row">
-      <strong>Evening</strong>
-      <div class="reading-block" v-for="(r, i) in day.pm" :key="i">
-        <span>{{ formatTime(r.reading_time) }}</span>
-        <span>{{ r.systolic }}/{{ r.diastolic }}</span>
-        <span>{{ r.heart_rate }} bpm</span>
+      <strong class="period-label">Evening</strong>
+      <div class="reading-row">
+        <div v-for="(r, i) in day.pm" :key="i" class="reading-item">
+          <span :class="['bp-dot', getBpColor(r.systolic, r.diastolic)]"></span>
+          <span class="reading-time">{{ formatTime(r.reading_time) }}</span>
+          <span class="reading-bp">{{ r.systolic }}/{{ r.diastolic }}</span>
+          <span class="reading-hr">{{ r.heart_rate }} bpm</span>
+        </div>
       </div>
     </div>
   </div>
