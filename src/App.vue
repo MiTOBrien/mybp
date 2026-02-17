@@ -1,11 +1,15 @@
 <script setup>
+import { useUserStore } from '@/stores/useUserStore'
 import { RouterView } from 'vue-router'
 import HeaderView from './views/HeaderView.vue'
 import FooterView from './views/FooterView.vue'
+
+const userStore = useUserStore()
+userStore.restoreFromLocalStorage()
 </script>
 
 <template>
-    <header>
+  <header>
     <div class="wrapper">
       <HeaderView />
     </div>
@@ -17,8 +21,8 @@ import FooterView from './views/FooterView.vue'
   </main>
   <footer>
     <div class="wrapper">
-      <FooterView />  
-      </div>
+      <FooterView />
+    </div>
   </footer>
 </template>
 

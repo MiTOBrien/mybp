@@ -8,12 +8,10 @@ export const useUserStore = defineStore('user', () => {
   const id = ref(null)
   const email = ref('')
   const name = ref('')
-  const subscribed = ref(false)
-  const subscriptionId = ref(null)
   const isLoggedIn = ref(false)
-  const disabled = ref(false)
   const showLoginModal = ref(false)
   const showRegisterModal = ref(false)
+  const readings = ref([])
 
   // Actions
   async function login(userData) {
@@ -22,19 +20,11 @@ export const useUserStore = defineStore('user', () => {
     id.value = userData.id
     email.value = userData.email
     name.value = userData.name
-    subscribed.value = !!userData.subscribed
-    subscriptionId.value = userData.subscription_id || null
-    disabled.value = !!userData.disabled
     isLoggedIn.value = true
     showLoginModal.value = false
     showRegisterModal.value = false
 
-    localStorage.setItem(
-      'user',
-      JSON.stringify({
-        ...userData,
-      }),
-    )
+    localStorage.setItem('user', JSON.stringify({ ...userData }))
   }
 
   function setUser(userData) {
@@ -50,20 +40,38 @@ export const useUserStore = defineStore('user', () => {
     id.value = null
     email.value = ''
     name.value = ''
-    subscribed.value = false
-    subscriptionId.value = null
-    disabled.value = false
     isLoggedIn.value = false
+    readings.value = []
 
     localStorage.removeItem('user')
   }
 
-  function restoreFromLocalStorage() {
+  async function restoreFromLocalStorage() {
     const stored = localStorage.getItem('user')
     if (stored) {
       const userData = JSON.parse(stored)
       login(userData)
-      fetchShows()
+      await fetchReadings()
+    }
+  }
+
+  async function fetchReadings() {
+    if (!token.value) return
+
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_APP_API_BASE_URL}/get-readings`,
+        {
+          headers: {
+            Authorization: `Bearer ${token.value}`,
+          },
+        }
+      )
+
+      const result = await response.json()
+      readings.value = result.readings || []
+    } catch (err) {
+      console.error("Error fetching readings:", err)
     }
   }
 
@@ -74,17 +82,16 @@ export const useUserStore = defineStore('user', () => {
     id,
     email,
     name,
-    subscribed,
-    subscriptionId,
     isLoggedIn,
-    disabled,
     showLoginModal,
     showRegisterModal,
+    readings,
 
     // Actions
     login,
     setUser,
     logout,
     restoreFromLocalStorage,
+    fetchReadings,
   }
 })

@@ -1,16 +1,10 @@
-import { integer, pgTable, varchar, serial, timestamp, text } from 'drizzle-orm/pg-core';
-import { t } from 'vue-router/dist/index-Cu9B0wDz.mjs';
-
-export const posts = pgTable('posts', {
-    id: integer().primaryKey().generatedAlwaysAsIdentity(),
-    title: varchar({ length: 255 }).notNull(),
-    content: text().notNull().default('')
-});
+import { integer, pgTable, varchar, serial, timestamp, boolean } from 'drizzle-orm/pg-core';
 
 export const users = pgTable('users', {
   id: serial('id').primaryKey(),
   email: varchar('email', { length: 255 }).notNull().unique(),
   password_hash: varchar('password_hash', { length: 255 }).notNull(),
+  tos_accepted: boolean('tos_accepted').notNull().default(false),
   created_at: timestamp('created_at').defaultNow(),
 });
 
@@ -23,6 +17,5 @@ export const bloodpressure = pgTable('bloodpressure', {
   systolic: integer('systolic').notNull(),
   diastolic: integer('diastolic').notNull(),
   heart_rate: integer('heart_rate').notNull(),
-  period: varchar('period', { length: 10 }), // 'AM' | 'PM'
   created_at: timestamp('created_at').defaultNow(),
 });

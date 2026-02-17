@@ -1,8 +1,12 @@
 <script setup>
+import { computed } from 'vue'
 import { useUserStore } from '@/stores/useUserStore'
 import BloodPressureModal from '@/components/BloodPressureModal.vue'
+import { groupReadings } from '@/utils/groupReadings'
+import { formatTime } from '@/utils/formatTime'
 
 const userStore = useUserStore()
+const grouped = computed(() => groupReadings(userStore.readings))
 
 const openBloodPressureModal = () => {
   userStore.showBpModal = true
@@ -33,6 +37,30 @@ const openBloodPressureModal = () => {
   >
     Add Blood Pressure Reading
   </button>
+
+  <div v-for="(day, date) in grouped" :key="date" class="day-row">
+    <h3>{{ new Date(date).toLocaleDateString() }}</h3>
+
+    <!-- Morning -->
+    <div v-if="day.am.length" class="period-row">
+      <strong>Morning</strong>
+      <div class="reading-block" v-for="(r, i) in day.am" :key="i">
+        <span>{{ formatTime(r.reading_time) }}</span>
+        <span>{{ r.systolic }}/{{ r.diastolic }}</span>
+        <span>{{ r.heart_rate }} bpm</span>
+      </div>
+    </div>
+
+    <!-- Evening -->
+    <div v-if="day.pm.length" class="period-row">
+      <strong>Evening</strong>
+      <div class="reading-block" v-for="(r, i) in day.pm" :key="i">
+        <span>{{ formatTime(r.reading_time) }}</span>
+        <span>{{ r.systolic }}/{{ r.diastolic }}</span>
+        <span>{{ r.heart_rate }} bpm</span>
+      </div>
+    </div>
+  </div>
 
   <!-- BP Modal -->
   <BloodPressureModal v-if="userStore.showBpModal" @close="userStore.showBpModal = false" />

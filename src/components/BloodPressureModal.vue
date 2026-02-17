@@ -33,7 +33,6 @@ const submitReading = async () => {
         systolic: Number(systolic.value),
         diastolic: Number(diastolic.value),
         heart_rate: Number(heartRate.value),
-        period: period.value,
       }),
     })
 
@@ -45,6 +44,7 @@ const submitReading = async () => {
     }
 
     alert('Blood pressure reading saved.')
+    await userStore.fetchReadings()
     emit('close')
   } catch (error) {
     console.error('BP entry error:', error)
@@ -71,15 +71,6 @@ const submitReading = async () => {
             required
             :disabled="isLoading"
           />
-        </div>
-
-        <!-- Period -->
-        <div class="form-group">
-          <label class="modal-text" for="period">Period:</label>
-          <select v-model="period" id="period" :disabled="isLoading">
-            <option value="AM">AM</option>
-            <option value="PM">PM</option>
-          </select>
         </div>
 
         <!-- Systolic -->
@@ -132,5 +123,4 @@ const submitReading = async () => {
   </div>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>
