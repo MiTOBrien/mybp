@@ -1,4 +1,4 @@
-import { integer, pgTable, varchar, serial, timestamp, boolean } from 'drizzle-orm/pg-core';
+import { integer, pgTable, varchar, serial, text, timestamp, boolean } from 'drizzle-orm/pg-core';
 
 export const users = pgTable('users', {
   id: serial('id').primaryKey(),
@@ -7,6 +7,18 @@ export const users = pgTable('users', {
   tos_accepted: boolean('tos_accepted').notNull().default(false),
   created_at: timestamp('created_at').defaultNow(),
 });
+
+export const passwordResetTokens = pgTable('password_reset_tokens', {
+  id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+  userId: integer('user_id')
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
+  token: text('token').notNull().unique(),
+  expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+})
 
 export const bloodpressure = pgTable('bloodpressure', {
   id: serial('id').primaryKey(),
