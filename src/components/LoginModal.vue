@@ -19,6 +19,9 @@ const openRegister = () => {
 
 const login = async () => {
   isLoading.value = true
+  console.log('Email:', email.value)
+  console.log('Password:', password.value)
+  console.log('API URL:', API_BASE_URL)
   try {
     const response = await fetch(`${API_BASE_URL}/login`, {
       method: 'POST',
@@ -122,5 +125,4 @@ const login = async () => {
   </div>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>
