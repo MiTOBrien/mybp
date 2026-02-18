@@ -26,15 +26,18 @@ const login = async () => {
     const response = await fetch(`${API_BASE_URL}/login`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json; charset=utf-8',
         Accept: 'application/json',
+        'Cache-Control': 'no-cache',
       },
       body: JSON.stringify({
         user: {
-          email: email.value,
+          email: email.value.trim(),
           password: password.value,
         },
       }),
+      redirect: 'follow',
+      cache: 'no-store',
     })
 
     const result = await response.json()
