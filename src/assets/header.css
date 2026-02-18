@@ -1,94 +1,112 @@
-body {
-  margin: 0;
-  padding: 0;
-}
-
-/* NAVBAR */
+/* ---------------------------------------
+   NAVBAR
+---------------------------------------- */
 nav {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
+  justify-content: space-between;
+
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  width: 100%;
-  height: 120px;
-  padding: 10px 20px;
 
-  /* Keep your banner image */
-  background: url('/banner_small.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  width: 100%;
+  height: 70px;
+  padding: 0 20px;
+
+  background: var(--color-primary);
+  color: #ffffff;
 
   z-index: 1000;
   box-sizing: border-box;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
-/* HOME LINK */
+/* ---------------------------------------
+   HOME LINK
+---------------------------------------- */
 .home {
-  font-size: 2rem;
+  font-size: 1.5rem;
   text-decoration: none;
-  color: var(--color-surface); /* soft cream for contrast */
+  color: #ffffff;
   font-weight: 700;
+  letter-spacing: 0.5px;
 }
 
-/* LEFT NAV */
-.left-nav {
-  display: flex;
-  position: absolute;
-  left: 20px;
-}
-
-/* CENTER NAV LINKS */
+/* ---------------------------------------
+   RIGHT NAV (Desktop)
+---------------------------------------- */
 .right-nav {
   display: flex;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  align-items: center;
   gap: 20px;
 }
 
-/* NAV LINKS */
-.nav-link {
-  text-decoration: none;
-  color: var(--color-text); /* earthy charcoal */
+.navbar-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #ffffff;
   font-weight: 500;
+}
+
+/* ---------------------------------------
+   NAV BUTTONS
+---------------------------------------- */
+.nav-button {
+  background: var(--color-accent);
+  border-radius: 999px;
+  padding: 6px 16px;
+  border: none;
+  color: #ffffff;
+  font-weight: 600;
+  cursor: pointer;
   transition:
-    color 0.3s ease,
-    transform 0.2s ease;
+    background-color 0.2s ease,
+    transform 0.1s ease;
 }
 
-.nav-link:hover {
-  color: var(--color-primary); /* sage hover */
-  transform: scale(1.08);
+.nav-button:hover {
+  background: var(--color-accent-dark);
+  transform: translateY(-1px);
 }
 
-/* HAMBURGER MENU */
+.nav-button.is-light {
+  background: #ffffff;
+  color: var(--color-primary);
+}
+
+.nav-button.is-light:hover {
+  background: var(--color-bg);
+}
+
+/* ---------------------------------------
+   HAMBURGER MENU (Mobile)
+---------------------------------------- */
 .hamburger {
   display: none;
   flex-direction: column;
   justify-content: space-around;
-  width: 30px;
-  height: 25px;
+
+  width: 28px;
+  height: 22px;
+
   background: none;
   border: none;
   cursor: pointer;
-  position: absolute;
-  right: 20px;
-  z-index: 1001;
 }
 
 .hamburger span {
   width: 100%;
   height: 3px;
-  background-color: var(--color-surface); /* soft cream bars */
+  background-color: #ffffff;
   transition: all 0.3s ease;
   transform-origin: center;
 }
 
 .hamburger.active span:nth-child(1) {
-  transform: rotate(45deg) translate(6px, 6px);
+  transform: rotate(45deg) translate(5px, 5px);
 }
 
 .hamburger.active span:nth-child(2) {
@@ -96,22 +114,27 @@ nav {
 }
 
 .hamburger.active span:nth-child(3) {
-  transform: rotate(-45deg) translate(6px, -6px);
+  transform: rotate(-45deg) translate(5px, -5px);
 }
 
-/* MOBILE NAV */
+/* ---------------------------------------
+   MOBILE NAV
+---------------------------------------- */
 .mobile-nav {
   display: none;
   position: fixed;
-  top: 120px;
+  top: 70px;
   right: 0;
-  background-color: var(--color-surface); /* soft cream */
+
+  background-color: var(--color-surface);
   width: 100%;
   padding: 20px;
+
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transform: translateX(100%);
   transition: transform 0.3s ease;
-  z-index: 1000;
+
+  z-index: 999;
   text-align: right;
 }
 
@@ -124,52 +147,33 @@ nav {
   padding: 12px 20px;
   font-size: 1rem;
   border-bottom: 1px solid var(--color-border);
-  text-align: right;
-  color: var(--color-text);
+  color: var(--color-text-primary);
+  text-decoration: none;
 }
 
 .mobile-nav .nav-link:last-child {
   border-bottom: none;
 }
 
-/* RESPONSIVE */
+/* ---------------------------------------
+   RESPONSIVE
+---------------------------------------- */
 @media (max-width: 768px) {
-  .home {
-    font-size: 1.5rem;
-    top: 70px;
-  }
-
-  .desktop-nav {
+  .right-nav {
     display: none;
   }
 
   .hamburger {
     display: flex;
   }
-
-  .mobile-nav {
-    display: block;
-  }
-
-  nav {
-    height: 70px;
-  }
 }
 
 @media (max-width: 480px) {
   .home {
-    font-size: 1.2rem;
+    font-size: 1.25rem;
   }
 
   nav {
-    padding: 10px 15px;
-  }
-
-  .left-nav {
-    left: 15px;
-  }
-
-  .hamburger {
-    right: 15px;
+    padding: 0 15px;
   }
 }

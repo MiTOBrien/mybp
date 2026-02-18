@@ -1,6 +1,5 @@
 <script setup>
 import { computed, ref } from 'vue'
-import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/useUserStore'
 import LoginModal from '@/components/LoginModal.vue'
 import RegisterModal from '@/components/RegisterModal.vue'
@@ -18,36 +17,47 @@ const handleLogout = () => {
 }
 
 const isMenuOpen = ref(false)
-
-const toggleMenu = () => {
-  isMenuOpen.value = !isMenuOpen.value
-}
-
-const closeMenu = () => {
-  isMenuOpen.value = false
-}
+const toggleMenu = () => (isMenuOpen.value = !isMenuOpen.value)
+const closeMenu = () => (isMenuOpen.value = false)
 </script>
 
 <template>
   <nav>
-    <div class="left-nav">
-      <RouterLink class="nav-link home" to="/" @click="closeMenu">Track My BP</RouterLink>
-    </div>
+    <RouterLink class="home" to="/" @click="closeMenu">Track My BP</RouterLink>
 
-    <!-- Desktop navigation -->
+    <!-- Desktop Nav -->
     <div class="right-nav">
-      <div class="navbar-end">
-        <div v-if="userStore.isLoggedIn" class="navbar-item">
-          Welcome!
-          <button @click="handleLogout" class="button nav-button is-light">Logout</button>
-        </div>
-        <div v-else class="navbar-item">
-          <button @click="openLoginModal" class="button nav-button is-primary">Login</button>
-        </div>
+      <div v-if="userStore.isLoggedIn" class="navbar-item">
+        Welcome!
+        <button @click="handleLogout" class="nav-button is-light">Logout</button>
+      </div>
+      <div v-else class="navbar-item">
+        <button @click="openLoginModal" class="nav-button">Login</button>
       </div>
     </div>
+
+    <!-- Hamburger -->
+    <button class="hamburger" @click="toggleMenu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
   </nav>
 
+  <!-- Mobile Nav -->
+  <div class="mobile-nav" :class="{ open: isMenuOpen }">
+    <RouterLink class="nav-link" to="/" @click="closeMenu">Home</RouterLink>
+
+    <template v-if="userStore.isLoggedIn">
+      <button class="nav-button is-light" @click="handleLogout">Logout</button>
+    </template>
+
+    <template v-else>
+      <button class="nav-button" @click="openLoginModal">Login</button>
+    </template>
+  </div>
+
+  <!-- Modals -->
   <LoginModal
     v-if="userStore.showLoginModal"
     @close="userStore.showLoginModal = false"
@@ -58,6 +68,7 @@ const closeMenu = () => {
       }
     "
   />
+
   <RegisterModal
     v-if="userStore.showRegisterModal"
     @close="userStore.showRegisterModal = false"
@@ -69,7 +80,3 @@ const closeMenu = () => {
     "
   />
 </template>
-
-<style scoped>
-
-</style>
