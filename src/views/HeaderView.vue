@@ -35,10 +35,10 @@ const closeMenu = () => {
     </div>
 
     <!-- Desktop navigation -->
-    <div class="right-nav desktop-nav">
+    <div class="right-nav">
       <div class="navbar-end">
         <div v-if="userStore.isLoggedIn" class="navbar-item">
-          Welcome, {{ userStore.email }}!
+          Welcome!
           <button @click="handleLogout" class="button nav-button is-light">Logout</button>
         </div>
         <div v-else class="navbar-item">
