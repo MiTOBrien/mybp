@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/useUserStore'
 import { PASSWORD_REGEX, isValidPassword } from '@/utils/passwordRules'
 
-const API_BASE_URL = import.meta.env.VITE_APP_API_BASE_URL
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 const email = ref('')
 const password = ref('')
 const showPassword = ref(false)
