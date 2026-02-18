@@ -32,7 +32,7 @@ const login = async () => {
       },
       body: JSON.stringify({
         user: {
-          email: email.value.trim(),
+          email: email.value.trim().toLowerCase(),
           password: password.value,
         },
       }),

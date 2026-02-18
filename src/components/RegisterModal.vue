@@ -42,18 +42,23 @@ const register = async () => {
   }
 
   try {
-    console.log('API Base URL:', API_BASE_URL) // Debug log
     const response = await fetch(`${API_BASE_URL}/register`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+        Accept: 'application/json',
+        'Cache-Control': 'no-cache',
+      },
       body: JSON.stringify({
         user: {
-          email: email.value,
+          email: email.value.trim().toLowerCase(),
           password: password.value,
           confirm_password: confirmPassword.value,
           tos_accepted: acceptedTOS.value,
         },
       }),
+      redirect: 'follow',
+      cache: 'no-store',
     })
 
     const data = await response.json()
