@@ -10,6 +10,11 @@ const router = createRouter({
       component: HomeView,
     },
     {
+      path: '/tos',
+      name: 'TermsOfService',
+      component: () => import('@/views/TermsOfServiceView.vue'),
+    },
+    {
       path: '/forgot-password',
       name: 'ForgotPassword',
       component: () => import('@/views/ForgotPasswordView.vue'),
