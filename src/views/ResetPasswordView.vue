@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { PASSWORD_REGEX, isValidPassword } from '@/utils/passwordRules'
 
 const route = useRoute()
 const router = useRouter()
@@ -13,6 +14,9 @@ const password = ref('')
 const confirmPassword = ref('')
 const submitting = ref(false)
 const success = ref(false)
+
+const isPasswordValid = computed(() => isValidPassword(password.value))
+const doPasswordsMatch = computed(() => password.value === confirmPassword.value)
 
 const validateToken = async () => {
   try {
@@ -81,7 +85,7 @@ const submit = async () => {
     <!-- Success -->
     <div v-else-if="success">
       <p>Your password has been reset successfully.</p>
-      <RouterLink to="/login" class="submit-btn" style="display:inline-block;margin-top:1rem;">
+      <RouterLink to="/login" class="submit-btn" style="display: inline-block; margin-top: 1rem">
         Return to Login
       </RouterLink>
     </div>
@@ -89,13 +93,44 @@ const submit = async () => {
     <!-- Reset form -->
     <form v-else @submit.prevent="submit" class="auth-form">
       <div class="form-group">
+        <p v-if="!isPasswordValid" class="validation-message">
+          Password must be at least 8 characters and include uppercase, lowercase, and a number or
+          symbol.
+        </p>
         <label>New Password</label>
-        <input type="password" v-model="password" required />
+        <input
+          type="password"
+          v-model="password"
+          :type="showPassword ? 'text' : 'password'"
+          id="password"
+          name="password"
+          placeholder="Enter your password"
+          required
+        />
+        <button type="button" class="toggle-password" @click="showPassword = !showPassword">
+          {{ showPassword ? 'Hide' : 'Show' }}
+        </button>
       </div>
 
       <div class="form-group">
+        <p v-if="!doPasswordsMatch" class="validation-message">Passwords do not match.</p>
         <label>Confirm Password</label>
-        <input type="password" v-model="confirmPassword" required />
+        <input
+          type="password"
+          v-model="confirmPassword"
+          :type="showConfirmPassword ? 'text' : 'password'"
+          id="confirmpassword"
+          name="confirmpassword"
+          placeholder="Confirm your password"
+          required
+        />
+        <button
+          type="button"
+          class="toggle-password"
+          @click="showConfirmPassword = !showConfirmPassword"
+        >
+          {{ showConfirmPassword ? 'Hide' : 'Show' }}
+        </button>
       </div>
 
       <button class="submit-btn" :disabled="submitting">
@@ -115,7 +150,7 @@ const submit = async () => {
   padding: 2rem;
   border-radius: 12px;
   border: 1px solid var(--color-border);
-  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 }
 
 .error {
