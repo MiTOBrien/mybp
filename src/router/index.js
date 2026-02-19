@@ -15,6 +15,11 @@ const router = createRouter({
       component: () => import('@/views/TermsOfServiceView.vue'),
     },
     {
+      path: '/privacy-policy',
+      name: 'PrivacyPolicy',
+      component: () => import('@/views/PrivacyPolicyView.vue'),
+    },
+    {
       path: '/forgot-password',
       name: 'ForgotPassword',
       component: () => import('@/views/ForgotPasswordView.vue'),
