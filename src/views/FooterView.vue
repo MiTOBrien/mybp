@@ -1,37 +1,40 @@
 <script setup></script>
 
 <template>
-  <section class="socials">
-    <a href="https://www.facebook.com/angi.lynn.storm.author" target="_blank" alt="Facebook Page"
-      ></a>
-    <a href="https://www.instagram.com/angilynnstormauthor/" target="_blank" alt="Instagram page"
-      ></a>
-    <a
-      href="https://www.threads.com/@angilynnstormauthor?xmt=AQF0CyDkemMfUt4RPDu8AF6ovWD7LNQshmS4vhH9hFlTLAM"
-      target="_blank"
-      alt="Threads page"
-      ></a>
-    <a
-      href="https://www.amazon.com/stores/Angi-Lynn-Storm/author/B0DPTMGM6H?ref=sr_ntt_srch_lnk_1&qid=1749494782&sr=8-1&isDramIntegrated=true&shoppingPortalEnabled=true>"
-      target="_blank"
-      alt="Amazon Page"
-      ></a>
-    <a href="https://reamstories.com/page/m3bk90e3vp/public" target="_blank" alt="Ream Stories Page"
-      ></a>
-    <a href="mailto:angilynnstormauthor@gmail.com" alt="Email me"
-      ></a>
-  </section>
+  <footer class="footer">
+    <div class="footer-content">
+      <p class="disclaimer">
+        Track My BP is for informational purposes only and does not provide medical advice.
+        Always consult a healthcare professional regarding any health concerns.
+      </p>
+
+      <p class="copyright">
+        © {{ new Date().getFullYear() }} Track My BP. All rights reserved.
+      </p>
+    </div>
+  </footer>
 </template>
 
 <style scoped>
-a {
-  padding: 10px;
-}
-.socials {
+.footer {
+  padding: 2rem 1rem;
   text-align: center;
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  margin-top: 3rem;
+  border-top: 1px solid var(--color-border);
 }
 
-.ream {
-  border-radius: 50%;
+.disclaimer {
+  max-width: 600px;
+  margin: 0 auto 1rem auto;
+  line-height: 1.5;
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
+
+.copyright {
+  font-size: 0.85rem;
+  opacity: 0.7;
 }
 </style>
