@@ -20,11 +20,7 @@ export async function handler(event) {
     const normalizedEmail = email.trim().toLowerCase()
 
     // Look up user
-    const [user] = await db
-      .select()
-      .from(users)
-      .where(eq(users.email, normalizedEmail))
-      .limit(1)
+    const [user] = await db.select().from(users).where(eq(users.email, normalizedEmail)).limit(1)
 
     // Always return success to avoid leaking which emails exist
     const genericResponse = {
@@ -54,7 +50,7 @@ export async function handler(event) {
 
     // Send email via Resend
     await resend.emails.send({
-      from: 'Track My BP <no-reply@trackmybp.app>',
+      from: 'Track My BP <onboarding@resend.dev>',
       to: normalizedEmail,
       subject: 'Reset Your Password',
       html: `
