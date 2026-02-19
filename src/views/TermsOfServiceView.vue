@@ -1,61 +1,87 @@
-<script setup>
-</script>
+<script setup></script>
 
 <template>
   <main>
-    <h1>My Yarn Tracker</h1>
-    <h2>Your yarn companion</h2>
+    <h1>Track My BP</h1>
     <div class="tos-container">
       <h3>Terms of Service</h3>
-      <p>Effective Date: January 31, 2026</p>
+      <p>Effective Date: September 04, 2026</p>
 
       <section>
         <h2>1. Purpose of the Platform</h2>
-        <p>My Yarn Tracker exists solely to allow users to track their yarn and patterns. After creating an account you can add your yarn stash and patterns to your personal collection.</p>
+        <p>
+          Track My BP exists solely to allow users to track their blood pressure, heart rate, and
+          related symptoms. After creating an account you can add your blood pressure readings and
+          related information.
+        </p>
       </section>
 
       <section>
-        <h2>2. Subscription Requirement for tracking yarn and patterns</h2>
-        <ul>
-          <li>Users must have an active subscription to add more than 5 yarn items or patterns to their collection.</li>
-          <li>Subscriptions are billed monthly and can be canceled at any time through the user account settings.</li>
-          <li>Failure to maintain an active subscription will result in the inability to add new yarn items or patterns beyond the free limit.</li>
-        </ul>
+        <h2>2. Account Requirement for Tracking Blood Pressure and Symptoms</h2>
+          <p>Users must have an active account to track blood pressure readings or symptoms.</p>
       </section>
 
       <section>
-        <h2>5. Subscription Policy</h2>
-        <p>All subscriptions are non-refundable. Users are responsible for managing their subscription status and renewals.</p>
+        <h2>3. Privacy Policy</h2>
+        <p>
+          Our <a href="/privacy-policy" target="_blank">Privacy Policy</a> explains how we collect,
+          use, and protect your data. By using Track My BP, you agree to its terms.
+        </p>
       </section>
 
       <section>
-        <h2>6. Privacy Policy</h2>
-        <p>Our <a href="/privacy-policy" target="_blank">Privacy Policy</a> explains how we collect, use, and protect your data. By using My Yarn Tracker, you agree to its terms.</p>
+        <h2>4. Dispute Resolution</h2>
+        <p>
+          By using Track My BP, you agree that any disputes arising from your use of the platform
+          will be resolved through binding arbitration in the state of Florida, with venue in or
+          near Orlando. You waive the right to participate in class actions or jury trials.
+        </p>
       </section>
 
       <section>
-        <h2>7. Dispute Resolution</h2>
-        <p>By using My Yarn Tracker, you agree that any disputes arising from your use of the platform will be resolved through binding arbitration in the state of Florida, with venue in or near Orlando. You waive the right to participate in class actions or jury trials.</p>
+        <h2>5. Changes to Terms</h2>
+        <p>
+          Track My BP may update these Terms of Service at any time. Continued use of the platform
+          after changes are posted constitutes acceptance of the revised terms.
+        </p>
       </section>
 
       <section>
-        <h2>8. Third-Party Services</h2>
-        <p>My Yarn Tracker integrates with third-party services such as Stripe for payment processing. By subscribing or making payments, you also agree to Stripe's <a href="https://stripe.com/legal" target="_blank">Terms of Service</a>.</p>
+        <h2>6. Termination</h2>
+        <p>
+          Track My BP reserves the right to suspend or terminate any account for violations of these
+          terms or for any behavior deemed harmful.
+        </p>
       </section>
 
       <section>
-        <h2>11. Changes to Terms</h2>
-        <p>My Yarn Tracker may update these Terms of Service at any time. Continued use of the platform after changes are posted constitutes acceptance of the revised terms.</p>
+        <h2>7. Contact</h2>
+        <p>
+          If you have questions or concerns about these Terms, please contact us at
+          trackmybpsupport@gmail.com.
+        </p>
       </section>
 
       <section>
-        <h2>12. Termination</h2>
-        <p>My Yarn Tracker reserves the right to suspend or terminate any account for violations of these terms or for any behavior deemed harmful.</p>
-      </section>
+        <h2>8. Medical Disclaimer</h2>
+        <p>
+          Track My BP is intended for informational and personal record‑keeping purposes only. It
+          does not provide medical advice, diagnosis, or treatment. The information you enter or
+          view within the platform should not be used as a substitute for professional medical
+          advice from a qualified healthcare provider.
+        </p>
 
-      <section>
-        <h2>13. Contact</h2>
-        <p>If you have questions or concerns about these Terms, please contact us at support@MyYarnTracker.com.</p>
+        <p>
+          Always consult a physician or other licensed healthcare professional regarding any
+          questions you may have about your health, symptoms, or medical conditions. Never disregard
+          professional medical advice or delay seeking it because of information presented within
+          Track My BP.
+        </p>
+
+        <p>
+          If you believe you are experiencing a medical emergency, call 911 or seek immediate
+          medical attention.
+        </p>
       </section>
     </div>
   </main>
@@ -75,7 +101,8 @@ h2 {
   font-size: 1.5rem;
   margin-top: 2rem;
 }
-p, li {
+p,
+li {
   font-size: 1rem;
   line-height: 1.6;
 }
