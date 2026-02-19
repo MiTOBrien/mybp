@@ -1,4 +1,4 @@
-import { db } from '../../db/db.js'
+import { db } from '../db/client.js'
 import { passwordResetTokens } from '../../db/schema.js'
 import { eq } from 'drizzle-orm'
 

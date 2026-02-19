@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs'
-import { db } from '../../db/db.js'
+import { db } from '../db/client.js'
 import { users, passwordResetTokens } from '../../db/schema.js'
 import { eq } from 'drizzle-orm'
 

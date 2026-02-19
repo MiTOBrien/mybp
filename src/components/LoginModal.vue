@@ -17,6 +17,11 @@ const openRegister = () => {
   emit('open-register')
 }
 
+const goToForgotPassword = () => {
+  emit('close')
+  router.push('/forgot-password')
+}
+
 const login = async () => {
   isLoading.value = true
   console.log('Email:', email.value)
@@ -118,7 +123,7 @@ const login = async () => {
 
       <div class="auth-links">
         <p class="forgot-password-link">
-          <RouterLink to="/forgot-password">Forgot your password?</RouterLink>
+          <button class="link-button" @click="goToForgotPassword">Forgot Password?</button>
         </p>
         <p class="register-link">
           <button class="link-button" @click="openRegister">Create Account</button>
