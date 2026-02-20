@@ -141,16 +141,16 @@ const confirmDelete = async (id) => {
 .icon-btn {
   background: none;
   border: none;
-  padding: 4px;
-  margin-right: 6px;
+  padding: 3px;
+  margin-right: 3px;
   cursor: pointer;
   display: flex;
   align-items: center;
 }
 
 .icon-btn .icon {
-  width: 20px;
-  height: 20px;
+  width: 15px;
+  height: 15px;
   color: #444;
 }
 
