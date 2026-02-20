@@ -5,39 +5,55 @@ import { bloodpressure } from '../../db/schema.js'
 
 export default async (req) => {
   try {
-    // 1. Check for Authorization header
+    // 1. Validate Authorization header
     const authHeader = req.headers.get('authorization')
     if (!authHeader) {
-      return Response.json({ error: 'Missing Authorization header' }, { status: 401 })
+      return new Response(JSON.stringify({ error: 'Missing Authorization header' }), {
+        status: 401,
+        headers: { 'Content-Type': 'application/json' },
+      })
     }
 
-    // 2. Extract and verify JWT
+    // 2. Verify JWT
     const token = authHeader.replace('Bearer ', '')
     let payload
-
     try {
       payload = jwt.verify(token, process.env.JWT_SECRET)
     } catch (err) {
-      return Response.json({ error: 'Invalid or expired token' }, { status: 401 })
+      return new Response(JSON.stringify({ error: 'Invalid or expired token' }), {
+        status: 401,
+        headers: { 'Content-Type': 'application/json' },
+      })
     }
 
     const userId = payload.userId
 
-    // 3. Parse request body
-    let { reading_time, systolic, diastolic, heart_rate } = await req.json()
-
-    if (!reading_time || !systolic || !diastolic || !heart_rate) {
-      return Response.json({ error: 'Missing required fields' }, { status: 400 })
+    // 3. Safely parse JSON body
+    let body
+    try {
+      body = await req.json()
+    } catch (err) {
+      return new Response(JSON.stringify({ error: 'Invalid JSON body' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      })
     }
 
-    // Convert reading_time string → Date object
-    // reading_time = new Date(reading_time)
+    const { reading_time, systolic, diastolic, heart_rate } = body
 
-    // 4. Connect to database
+    // 4. Validate required fields
+    if (!reading_time || !systolic || !diastolic || !heart_rate) {
+      return new Response(JSON.stringify({ error: 'Missing required fields' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      })
+    }
+
+    // 5. Connect to DB
     const sql = neon(process.env.NETLIFY_DATABASE_URL)
     const db = drizzle(sql)
 
-    // 5. Insert the reading
+    // 6. Insert reading
     await db.insert(bloodpressure).values({
       user_id: userId,
       reading_time,
@@ -46,9 +62,16 @@ export default async (req) => {
       heart_rate,
     })
 
-    return Response.json({ ok: true })
+    // 7. Return success
+    return new Response(JSON.stringify({ ok: true }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    })
   } catch (err) {
     console.error('Add BP error:', err)
-    return Response.json({ error: 'Server error' }, { status: 500 })
+    return new Response(JSON.stringify({ error: 'Server error' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    })
   }
 }
