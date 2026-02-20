@@ -13,6 +13,18 @@ const grouped = computed(() => groupReadings(userStore.readings))
 const openBloodPressureModal = () => {
   userStore.showBpModal = true
 }
+
+const confirmDelete = async (id) => {
+  if (!confirm('Delete this reading?')) return
+
+  await fetch('/.netlify/functions/delete-reading', {
+    method: 'DELETE',
+    body: JSON.stringify({ id }),
+  })
+
+  // Refresh readings
+  await userStore.fetchReadings()
+}
 </script>
 
 <template>
@@ -48,6 +60,9 @@ const openBloodPressureModal = () => {
       <strong class="period-label">Morning</strong>
       <div class="reading-row">
         <div v-for="(r, i) in day.am" :key="i" class="reading-item">
+          <button @click="confirmDelete(r.id)" class="button nav-button is-primary">
+            Delete
+          </button>
           <span :class="['bp-dot', getBpColor(r.systolic, r.diastolic)]"></span>
           <span class="reading-time">{{ formatTime(r.reading_time) }}</span>
           <span class="reading-bp">{{ r.systolic }}/{{ r.diastolic }}</span>
@@ -61,6 +76,7 @@ const openBloodPressureModal = () => {
       <strong class="period-label">Evening</strong>
       <div class="reading-row">
         <div v-for="(r, i) in day.pm" :key="i" class="reading-item">
+          <button @click="confirmDelete(r.id)" class="button nav-button is-primary">Delete</button>
           <span :class="['bp-dot', getBpColor(r.systolic, r.diastolic)]"></span>
           <span class="reading-time">{{ formatTime(r.reading_time) }}</span>
           <span class="reading-bp">{{ r.systolic }}/{{ r.diastolic }}</span>
