@@ -157,4 +157,32 @@ const confirmDelete = async (id) => {
 .icon-btn:active .icon {
   transform: scale(0.9);
 }
+
+/* Prevent wrapping of time, BP, and HR */
+.reading-time,
+.reading-bp,
+.reading-hr {
+  white-space: nowrap;
+}
+
+/* Tighten spacing between items */
+.reading-item {
+  display: flex;
+  align-items: center;
+  gap: 6px; /* reduce from whatever it was */
+}
+
+/* Shrink text slightly on small screens */
+@media (max-width: 480px) {
+  .reading-time,
+  .reading-bp,
+  .reading-hr {
+    font-size: 0.9rem;
+  }
+
+  .icon-btn .icon {
+    width: 18px;
+    height: 18px;
+  }
+}
 </style>
