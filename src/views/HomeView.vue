@@ -69,8 +69,22 @@ const confirmDelete = async (id) => {
       <strong class="period-label">Morning</strong>
       <div class="reading-row">
         <div v-for="(r, i) in day.am" :key="i" class="reading-item">
-          <button @click="confirmDelete(r.id)" class="button nav-button is-primary">Delete</button>
-          <button @click="openEditModal(r)" class="button nav-button is-primary">Edit</button>
+          <button class="icon-btn delete" @click="confirmDelete(r.id)">
+            <svg viewBox="0 0 24 24" class="icon">
+              <path
+                fill="currentColor"
+                d="M9 3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1h5v2H4V3h5zm1 6v9a1 1 0 0 0 2 0V9h-2zm4 0v9a1 1 0 0 0 2 0V9h-2zM6 5h12l-1 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L6 5z"
+              />
+            </svg>
+          </button>
+          <button class="icon-btn" @click="openEditModal(r)">
+            <svg viewBox="0 0 24 24" class="icon">
+              <path
+                fill="currentColor"
+                d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+              />
+            </svg>
+          </button>
           <span :class="['bp-dot', getBpColor(r.systolic, r.diastolic)]"></span>
           <span class="reading-time">{{ formatTime(r.reading_time) }}</span>
           <span class="reading-bp">{{ r.systolic }}/{{ r.diastolic }}</span>
@@ -84,8 +98,22 @@ const confirmDelete = async (id) => {
       <strong class="period-label">Evening</strong>
       <div class="reading-row">
         <div v-for="(r, i) in day.pm" :key="i" class="reading-item">
-          <button @click="confirmDelete(r.id)" class="button nav-button is-primary">Delete</button>
-          <button @click="openEditModal(r)" class="button nav-button is-primary">Edit</button>
+          <button class="icon-btn delete" @click="confirmDelete(r.id)">
+            <svg viewBox="0 0 24 24" class="icon">
+              <path
+                fill="currentColor"
+                d="M9 3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1h5v2H4V3h5zm1 6v9a1 1 0 0 0 2 0V9h-2zm4 0v9a1 1 0 0 0 2 0V9h-2zM6 5h12l-1 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L6 5z"
+              />
+            </svg>
+          </button>
+          <button class="icon-btn" @click="openEditModal(r)">
+            <svg viewBox="0 0 24 24" class="icon">
+              <path
+                fill="currentColor"
+                d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+              />
+            </svg>
+          </button>
           <span :class="['bp-dot', getBpColor(r.systolic, r.diastolic)]"></span>
           <span class="reading-time">{{ formatTime(r.reading_time) }}</span>
           <span class="reading-bp">{{ r.systolic }}/{{ r.diastolic }}</span>
@@ -109,4 +137,24 @@ const confirmDelete = async (id) => {
   />
 </template>
 
-<style scoped></style>
+<style scoped>
+.icon-btn {
+  background: none;
+  border: none;
+  padding: 4px;
+  margin-right: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.icon-btn .icon {
+  width: 20px;
+  height: 20px;
+  color: #444;
+}
+
+.icon-btn:active .icon {
+  transform: scale(0.9);
+}
+</style>
