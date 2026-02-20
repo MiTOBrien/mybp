@@ -4,8 +4,18 @@ import { useUserStore } from '@/stores/useUserStore'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 const userStore = useUserStore()
+
+// Props: if editingReading is provided, we are in EDIT mode
+const props = defineProps({
+  editingReading: {
+    type: Object,
+    default: null,
+  },
+})
+
 const emit = defineEmits(['close'])
 
+// Form fields
 const readingTime = ref('')
 const systolic = ref(null)
 const diastolic = ref(null)
@@ -13,28 +23,52 @@ const heartRate = ref(null)
 const period = ref('AM')
 const isLoading = ref(false)
 
-// Prefill with current date/time in ISO format
+// Prefill fields depending on Add vs Edit mode
 onMounted(() => {
-  readingTime.value = new Date().toISOString().slice(0, 16) // yyyy-mm-ddThh:mm
+  if (props.editingReading) {
+    // EDIT MODE
+    readingTime.value = props.editingReading.reading_time.slice(0, 16)
+    systolic.value = props.editingReading.systolic
+    diastolic.value = props.editingReading.diastolic
+    heartRate.value = props.editingReading.heart_rate
+    period.value = props.editingReading.period || 'AM'
+  } else {
+    // ADD MODE
+    readingTime.value = new Date().toISOString().slice(0, 16)
+  }
 })
 
 const submitReading = async () => {
   isLoading.value = true
 
   try {
-    const response = await fetch(`${API_BASE_URL}/add-bp`, {
-      method: 'POST',
+    const payload = {
+      reading_time: readingTime.value,
+      systolic: Number(systolic.value),
+      diastolic: Number(diastolic.value),
+      heart_rate: Number(heartRate.value),
+    }
+
+    // Determine Add vs Edit
+    const url = props.editingReading ? `${API_BASE_URL}/update-reading` : `${API_BASE_URL}/add-bp`
+
+    const method = props.editingReading ? 'PUT' : 'POST'
+
+    const response = await fetch(url, {
+      method,
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${userStore.user?.token}`,
       },
-      body: JSON.stringify({
-        reading_time: readingTime.value,
-        systolic: Number(systolic.value),
-        diastolic: Number(diastolic.value),
-        heart_rate: Number(heartRate.value),
-      }),
+      body: JSON.stringify(
+        props.editingReading ? { id: props.editingReading.id, ...payload } : payload,
+      ),
     })
+
+    console.log('RAW RESPONSE OBJECT:', response)
+
+    const rawText = await response.clone().text()
+    console.log('RAW RESPONSE TEXT:', rawText)
 
     const result = await response.json()
 
@@ -43,7 +77,8 @@ const submitReading = async () => {
       return
     }
 
-    alert('Blood pressure reading saved.')
+    alert(props.editingReading ? 'Reading updated.' : 'Reading saved.')
+
     await userStore.fetchReadings()
     emit('close')
   } catch (error) {
@@ -57,10 +92,14 @@ const submitReading = async () => {
 
 <template>
   <div class="modal-overlay" @click.self="$emit('close')">
-    <div class="login-form">
+    <div class="login-form" @click.stop>
       <button class="close-btn" @click="$emit('close')">×</button>
 
       <form @submit.prevent="submitReading">
+        <h2 class="modal-title">
+          {{ props.editingReading ? 'Edit Reading' : 'Add Blood Pressure Reading' }}
+        </h2>
+
         <!-- Reading Time -->
         <div class="form-group">
           <label class="modal-text" for="readingTime">Date & Time:</label>
@@ -116,7 +155,15 @@ const submitReading = async () => {
         </div>
 
         <button type="submit" class="submit-btn" :disabled="isLoading">
-          {{ isLoading ? 'Saving...' : 'Save Reading' }}
+          {{
+            isLoading
+              ? props.editingReading
+                ? 'Updating...'
+                : 'Saving...'
+              : props.editingReading
+                ? 'Update Reading'
+                : 'Save Reading'
+          }}
         </button>
       </form>
     </div>

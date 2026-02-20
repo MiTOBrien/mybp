@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, nextTick, ref } from 'vue'
 import { useUserStore } from '@/stores/useUserStore'
 import BloodPressureModal from '@/components/BloodPressureModal.vue'
 import { groupReadings } from '@/utils/groupReadings'
@@ -10,7 +10,15 @@ import { getBpColor } from '@/utils/bpColor'
 const userStore = useUserStore()
 const grouped = computed(() => groupReadings(userStore.readings))
 
+const editingReading = ref(null)
+
 const openBloodPressureModal = () => {
+  editingReading.value = null
+  userStore.showBpModal = true
+}
+
+const openEditModal = (reading) => {
+  editingReading.value = { ...reading }
   userStore.showBpModal = true
 }
 
@@ -22,7 +30,6 @@ const confirmDelete = async (id) => {
     body: JSON.stringify({ id }),
   })
 
-  // Refresh readings
   await userStore.fetchReadings()
 }
 </script>
@@ -37,6 +44,8 @@ const confirmDelete = async (id) => {
     time, and generate reports to share with your healthcare provider. Say goodbye to paper logs and
     hello to effortless tracking!
   </p>
+
+  <hr />
 
   <!-- Show this ONLY when logged OUT -->
   <p v-if="!userStore.user">
@@ -60,9 +69,8 @@ const confirmDelete = async (id) => {
       <strong class="period-label">Morning</strong>
       <div class="reading-row">
         <div v-for="(r, i) in day.am" :key="i" class="reading-item">
-          <button @click="confirmDelete(r.id)" class="button nav-button is-primary">
-            Delete
-          </button>
+          <button @click="confirmDelete(r.id)" class="button nav-button is-primary">Delete</button>
+          <button @click="openEditModal(r)" class="button nav-button is-primary">Edit</button>
           <span :class="['bp-dot', getBpColor(r.systolic, r.diastolic)]"></span>
           <span class="reading-time">{{ formatTime(r.reading_time) }}</span>
           <span class="reading-bp">{{ r.systolic }}/{{ r.diastolic }}</span>
@@ -77,6 +85,7 @@ const confirmDelete = async (id) => {
       <div class="reading-row">
         <div v-for="(r, i) in day.pm" :key="i" class="reading-item">
           <button @click="confirmDelete(r.id)" class="button nav-button is-primary">Delete</button>
+          <button @click="openEditModal(r)" class="button nav-button is-primary">Edit</button>
           <span :class="['bp-dot', getBpColor(r.systolic, r.diastolic)]"></span>
           <span class="reading-time">{{ formatTime(r.reading_time) }}</span>
           <span class="reading-bp">{{ r.systolic }}/{{ r.diastolic }}</span>
@@ -87,7 +96,17 @@ const confirmDelete = async (id) => {
   </div>
 
   <!-- BP Modal -->
-  <BloodPressureModal v-if="userStore.showBpModal" @close="userStore.showBpModal = false" />
+  <BloodPressureModal
+    v-if="userStore.showBpModal"
+    :editingReading="editingReading"
+    @close="
+      async () => {
+        userStore.showBpModal = false
+        await nextTick()
+        editingReading.value = null
+      }
+    "
+  />
 </template>
 
 <style scoped></style>
