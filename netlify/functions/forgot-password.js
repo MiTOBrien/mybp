@@ -4,6 +4,10 @@ import { db } from '../db/client.js'
 import { users, passwordResetTokens } from '../../db/schema.js'
 import { eq } from 'drizzle-orm'
 
+console.log("RESEND KEY:", !!process.env.RESEND_API_KEY)
+console.log("DB URL:", !!process.env.NETLIFY_DATABASE_URL)
+console.log("JWT SECRET:", !!process.env.JWT_SECRET)
+
 const resend = new Resend(process.env.RESEND_API_KEY)
 
 export async function handler(event) {
