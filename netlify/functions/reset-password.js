@@ -39,7 +39,7 @@ export async function handler(event) {
     const hashed = await bcrypt.hash(newPassword, 10)
 
     // Update user password
-    await db.update(users).set({ password: hashed }).where(eq(users.id, resetRow.userId))
+    await db.update(users).set({ password_hash: hashed }).where(eq(users.id, resetRow.userId))
 
     // Invalidate token
     await db.delete(passwordResetTokens).where(eq(passwordResetTokens.id, resetRow.id))
