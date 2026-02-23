@@ -15,17 +15,20 @@
   opacity: 0.9;
 }
 
-.legal-links {
+.legal-links,
+.reference-links {
   margin-bottom: 1rem;
   font-size: 0.9rem;
 }
 
-.legal-links a {
+.legal-links a,
+.reference-links a {
   color: var(--color-text-secondary);
   text-decoration: none;
 }
 
-.legal-links a:hover {
+.legal-links a:hover,
+.reference-links a:hover {
   text-decoration: underline;
 }
 
