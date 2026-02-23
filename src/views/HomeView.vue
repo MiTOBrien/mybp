@@ -53,19 +53,19 @@ const confirmDelete = async (id) => {
   </p>
 
   <hr />
-
+  
   <!-- Show this ONLY when logged OUT -->
   <p v-if="!userStore.user">
     Create an account or login to get started tracking your blood pressure.
   </p>
-
+  
   <!-- Show this ONLY when logged IN -->
   <p v-if="userStore.user">Welcome {{ displayName }}!</p>
 
   <button
     v-if="userStore.user"
     @click="openBloodPressureModal"
-    class="button nav-button is-primary"
+    class="button nav-button add-reading-btn is-primary"
   >
     Add Blood Pressure Reading
   </button>
