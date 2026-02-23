@@ -23,12 +23,11 @@ const closeMenu = () => (isMenuOpen.value = false)
 
 <template>
   <nav>
-    <RouterLink class="home" to="/" @click="closeMenu">Track My BP</RouterLink>
+    <RouterLink class="home" to="/" @click="closeMenu"><img src="/trackmybp.png" alt="Track My BP Logo" /></RouterLink>
 
     <!-- Desktop Nav -->
     <div class="right-nav">
       <div v-if="userStore.isLoggedIn" class="navbar-item">
-        Welcome!
         <button @click="handleLogout" class="nav-button is-light">Logout</button>
       </div>
       <div v-else class="navbar-item">
@@ -80,3 +79,9 @@ const closeMenu = () => (isMenuOpen.value = false)
     "
   />
 </template>
+<style scoped>
+img {
+  height: 60px;
+  margin-right: 0.5rem;
+}
+</style>

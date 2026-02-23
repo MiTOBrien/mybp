@@ -1,34 +1,35 @@
-# mybp
+# Track My BP
 
-This template should help get you started developing with Vue 3 in Vite.
+This site is developed to provide an easy, straightforward way for users to track their blood pressure readings without having to jump through hoops. You can quickly enter readings, log multiple readings for the same day, edit and delete readings.
 
-## Recommended IDE Setup
+## Deployed site
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+[Track My BP](https://trackmybp.netlify.app/)
 
-## Recommended Browser Setup
+## Technology Used
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
+- Vue.js
+- bcrypt.js
+- JWT
+- Netlify "serverless" backend that includes:
+  * Postgresql database
+- Resend
 
 ## Project Setup
 
+To run this locally clone this reposity onto your local machine. Change directory into the mybp directory and run:
 ```sh
 npm install
 ```
+Push the application to your Github and then deploy it to Netlify. After deploying to Netlify install the Netlify CLI:
+```sh
+npm install -g netlify-cli
+```
 
-### Compile and Hot-Reload for Development
+### Launch Application
 
 ```sh
-npm run dev
+netlify dev
 ```
 
 ### Compile and Minify for Production
