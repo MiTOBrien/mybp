@@ -8,6 +8,13 @@ import { formatDateKey } from '@/utils/formatDateKey'
 import { getBpColor } from '@/utils/bpColor'
 
 const userStore = useUserStore()
+const email = userStore.user?.email
+const displayName = email
+  .split('@')[0]
+  .split('.')
+  .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+  .join(' ')
+
 const grouped = computed(() => groupReadings(userStore.readings))
 
 const editingReading = ref(null)
@@ -53,6 +60,8 @@ const confirmDelete = async (id) => {
   </p>
 
   <!-- Show this ONLY when logged IN -->
+  <p v-if="userStore.user">Welcome {{ displayName }}!</p>
+
   <button
     v-if="userStore.user"
     @click="openBloodPressureModal"
