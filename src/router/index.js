@@ -29,6 +29,16 @@ const router = createRouter({
       name: 'ResetPassword',
       component: () => import('@/views/ResetPasswordView.vue'),
     },
+    {
+      path: '/hbp-management',
+      name: 'HbpManagement',
+      component: () => import('@/views/HbpManagementView.vue'),
+    },
+    {
+      path: '/hbp-causes',
+      name: 'HbpCauses',
+      component: () => import('@/views/HbpCausesView.vue'),
+    },
   ],
 })
 
