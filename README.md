@@ -2,6 +2,8 @@
 
 This site is developed to provide an easy, straightforward way for users to track their blood pressure readings without having to jump through hoops. You can quickly enter readings, log multiple readings for the same day, edit and delete readings.
 
+![Screenshot of Author Website](public/trackmybp_screenshot.png)
+
 ## Deployed site
 
 [Track My BP](https://trackmybp.netlify.app/)
