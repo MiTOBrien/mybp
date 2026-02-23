@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useUserStore } from '@/stores/useUserStore'
+import { getLocalDateTimeString } from '@/utils/getLocalDateTimeString'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 const userStore = useUserStore()
@@ -16,7 +17,7 @@ const props = defineProps({
 const emit = defineEmits(['close'])
 
 // Form fields
-const readingTime = ref('')
+const readingTime = ref(getLocalDateTimeString())
 const systolic = ref(null)
 const diastolic = ref(null)
 const heartRate = ref(null)
@@ -34,7 +35,7 @@ onMounted(() => {
     period.value = props.editingReading.period || 'AM'
   } else {
     // ADD MODE
-    readingTime.value = new Date().toISOString().slice(0, 16)
+    readingTime.value = getLocalDateTimeString()
   }
 })
 
