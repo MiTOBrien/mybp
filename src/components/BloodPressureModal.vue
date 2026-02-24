@@ -17,6 +17,7 @@ const props = defineProps({
 const emit = defineEmits(['close'])
 
 // Form fields
+const medicationTaken = ref(false)
 const readingTime = ref(getLocalDateTimeString())
 const systolic = ref(null)
 const diastolic = ref(null)
@@ -45,7 +46,7 @@ const submitReading = async () => {
 
   try {
     const payload = {
-      medicationTaken: medicationTaken.value,
+      medication_taken: medicationTaken.value,
       reading_time: readingTime.value,
       systolic: Number(systolic.value),
       diastolic: Number(diastolic.value),
@@ -67,11 +68,6 @@ const submitReading = async () => {
         props.editingReading ? { id: props.editingReading.id, ...payload } : payload,
       ),
     })
-
-    // console.log('RAW RESPONSE OBJECT:', response)
-
-    // const rawText = await response.clone().text()
-    // console.log('RAW RESPONSE TEXT:', rawText)
 
     const result = await response.json()
 
