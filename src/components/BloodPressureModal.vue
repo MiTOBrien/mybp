@@ -28,6 +28,7 @@ const isLoading = ref(false)
 onMounted(() => {
   if (props.editingReading) {
     // EDIT MODE
+    medicationTaken.value = props.editingReading.medication_taken || false
     readingTime.value = props.editingReading.reading_time.slice(0, 16)
     systolic.value = props.editingReading.systolic
     diastolic.value = props.editingReading.diastolic
@@ -44,6 +45,7 @@ const submitReading = async () => {
 
   try {
     const payload = {
+      medicationTaken: medicationTaken.value,
       reading_time: readingTime.value,
       systolic: Number(systolic.value),
       diastolic: Number(diastolic.value),
@@ -66,10 +68,10 @@ const submitReading = async () => {
       ),
     })
 
-    console.log('RAW RESPONSE OBJECT:', response)
+    // console.log('RAW RESPONSE OBJECT:', response)
 
-    const rawText = await response.clone().text()
-    console.log('RAW RESPONSE TEXT:', rawText)
+    // const rawText = await response.clone().text()
+    // console.log('RAW RESPONSE TEXT:', rawText)
 
     const result = await response.json()
 
