@@ -101,6 +101,14 @@ const submitReading = async () => {
           {{ props.editingReading ? 'Edit Reading' : 'Add Blood Pressure Reading' }}
         </h2>
 
+        <!-- Medication Taken-->
+        <div>
+          <label class="modal-text med-label" for="medicationTaken">
+            <input type="checkbox" id="medicationTaken" v-model="medicationTaken" />
+            Medication Taken (if prescribed)
+          </label>
+        </div>
+
         <!-- Reading Time -->
         <div class="form-group">
           <label class="modal-text" for="readingTime">Date & Time:</label>
