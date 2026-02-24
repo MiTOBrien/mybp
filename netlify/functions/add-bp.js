@@ -56,6 +56,7 @@ export default async (req) => {
     // 6. Insert reading
     await db.insert(bloodpressure).values({
       user_id: userId,
+      medication_taken,
       reading_time,
       systolic,
       diastolic,

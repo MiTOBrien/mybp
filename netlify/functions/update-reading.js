@@ -8,7 +8,7 @@ export async function handler(event) {
   }
 
   try {
-    const { id, systolic, diastolic, heart_rate, reading_time } = JSON.parse(event.body || '{}')
+    const { id, medication_taken, systolic, diastolic, heart_rate, reading_time } = JSON.parse(event.body || '{}')
 
     if (!id) {
       return { statusCode: 400, body: 'Missing reading ID' }
@@ -17,6 +17,7 @@ export async function handler(event) {
     await db
       .update(bloodpressure)
       .set({
+        medication_taken,
         systolic,
         diastolic,
         heart_rate,
