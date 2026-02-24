@@ -98,6 +98,7 @@ const confirmDelete = async (id) => {
           <span class="reading-time">{{ formatTime(r.reading_time) }}</span>
           <span class="reading-bp">{{ r.systolic }}/{{ r.diastolic }}</span>
           <span class="reading-hr">{{ r.heart_rate }} bpm</span>
+          <p v-if="r.medication_taken">medication taken</p>
         </div>
       </div>
     </div>
