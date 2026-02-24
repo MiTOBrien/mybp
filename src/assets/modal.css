@@ -182,7 +182,7 @@
 }
 
 /* ---------------------------------------
-   Terms of Service
+   Terms of Service and Medication Labels
 ---------------------------------------- */
 .tos-label {
   display: inline-flex;
@@ -194,5 +194,17 @@
 }
 
 .tos-label input[type='checkbox'] {
+  margin: 0;
+}
+
+.med-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 0;
+}
+
+.med-label input[type='checkbox'] {
   margin: 0;
 }
