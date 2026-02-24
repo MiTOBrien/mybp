@@ -53,13 +53,11 @@ const confirmDelete = async (id) => {
   </p>
 
   <hr />
-  
-  <!-- Show this ONLY when logged OUT -->
+
   <p v-if="!userStore.user">
     Create an account or login to get started tracking your blood pressure.
   </p>
-  
-  <!-- Show this ONLY when logged IN -->
+
   <p v-if="userStore.user">Welcome {{ displayName }}!</p>
 
   <button
@@ -73,67 +71,79 @@ const confirmDelete = async (id) => {
   <div v-for="(day, date) in grouped" :key="date" class="day-card">
     <h3 class="day-header">{{ formatDateKey(date) }}</h3>
 
-    <!-- Morning -->
+    <!-- MORNING -->
     <div v-if="day.am.length" class="period-row">
       <strong class="period-label">Morning</strong>
+
       <div class="reading-row">
         <div v-for="(r, i) in day.am" :key="i" class="reading-item">
-          <button class="icon-btn delete" @click="confirmDelete(r.id)">
-            <svg viewBox="0 0 24 24" class="icon">
-              <path
-                fill="currentColor"
-                d="M9 3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1h5v2H4V3h5zm1 6v9a1 1 0 0 0 2 0V9h-2zm4 0v9a1 1 0 0 0 2 0V9h-2zM6 5h12l-1 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L6 5z"
-              />
-            </svg>
-          </button>
-          <button class="icon-btn" @click="openEditModal(r)">
-            <svg viewBox="0 0 24 24" class="icon">
-              <path
-                fill="currentColor"
-                d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
-              />
-            </svg>
-          </button>
-          <span :class="['bp-dot', getBpColor(r.systolic, r.diastolic)]"></span>
-          <span class="reading-time">{{ formatTime(r.reading_time) }}</span>
-          <span class="reading-bp">{{ r.systolic }}/{{ r.diastolic }}</span>
-          <span class="reading-hr">{{ r.heart_rate }} bpm</span>
-          <p v-if="r.medication_taken">medication taken</p>
+          <!-- TOP ROW -->
+          <div class="reading-top-row">
+            <button class="icon-btn delete" @click="confirmDelete(r.id)">
+              <svg viewBox="0 0 24 24" class="icon">
+                <path
+                  fill="currentColor"
+                  d="M9 3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1h5v2H4V3h5zm1 6v9a1 1 0 0 0 2 0V9h-2zm4 0v9a1 1 0 0 0 2 0V9h-2zM6 5h12l-1 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L6 5z"
+                />
+              </svg>
+            </button>
+
+            <button class="icon-btn" @click="openEditModal(r)">
+              <svg viewBox="0 0 24 24" class="icon">
+                <path
+                  fill="currentColor"
+                  d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+                />
+              </svg>
+            </button>
+
+            <span :class="['bp-dot', getBpColor(r.systolic, r.diastolic)]"></span>
+            <span class="reading-time">{{ formatTime(r.reading_time) }}</span>
+            <span class="reading-bp">{{ r.systolic }}/{{ r.diastolic }}</span>
+            <span class="reading-hr">{{ r.heart_rate }} bpm</span>
+          </div>
+          <div v-if="r.medication_taken" class="medication-line">Medication Taken</div>
         </div>
       </div>
     </div>
 
-    <!-- Evening -->
+    <!-- EVENING -->
     <div v-if="day.pm.length" class="period-row">
       <strong class="period-label">Evening</strong>
+
       <div class="reading-row">
         <div v-for="(r, i) in day.pm" :key="i" class="reading-item">
-          <button class="icon-btn delete" @click="confirmDelete(r.id)">
-            <svg viewBox="0 0 24 24" class="icon">
-              <path
-                fill="currentColor"
-                d="M9 3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1h5v2H4V3h5zm1 6v9a1 1 0 0 0 2 0V9h-2zm4 0v9a1 1 0 0 0 2 0V9h-2zM6 5h12l-1 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L6 5z"
-              />
-            </svg>
-          </button>
-          <button class="icon-btn" @click="openEditModal(r)">
-            <svg viewBox="0 0 24 24" class="icon">
-              <path
-                fill="currentColor"
-                d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
-              />
-            </svg>
-          </button>
-          <span :class="['bp-dot', getBpColor(r.systolic, r.diastolic)]"></span>
-          <span class="reading-time">{{ formatTime(r.reading_time) }}</span>
-          <span class="reading-bp">{{ r.systolic }}/{{ r.diastolic }}</span>
-          <span class="reading-hr">{{ r.heart_rate }} bpm</span>
+          <!-- TOP ROW -->
+          <div class="reading-top-row">
+            <button class="icon-btn delete" @click="confirmDelete(r.id)">
+              <svg viewBox="0 0 24 24" class="icon">
+                <path
+                  fill="currentColor"
+                  d="M9 3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1h5v2H4V3h5zm1 6v9a1 1 0 0 0 2 0V9h-2zm4 0v9a1 1 0 0 0 2 0V9h-2zM6 5h12l-1 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L6 5z"
+                />
+              </svg>
+            </button>
+
+            <button class="icon-btn" @click="openEditModal(r)">
+              <svg viewBox="0 0 24 24" class="icon">
+                <path
+                  fill="currentColor"
+                  d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+                />
+              </svg>
+            </button>
+
+            <span :class="['bp-dot', getBpColor(r.systolic, r.diastolic)]"></span>
+            <span class="reading-time">{{ formatTime(r.reading_time) }}</span>
+            <span class="reading-bp">{{ r.systolic }}/{{ r.diastolic }}</span>
+            <span class="reading-hr">{{ r.heart_rate }} bpm</span>
+          </div>
+          <div v-if="r.medication_taken" class="medication-line">Medication Taken</div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- BP Modal -->
   <BloodPressureModal
     v-if="userStore.showBpModal"
     :editingReading="editingReading"
