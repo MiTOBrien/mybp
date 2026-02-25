@@ -39,7 +39,7 @@ export default async (req) => {
       })
     }
 
-    const { reading_time, systolic, diastolic, heart_rate } = body
+    const { medication_taken,reading_time, systolic, diastolic, heart_rate } = body
 
     // 4. Validate required fields
     if (!reading_time || !systolic || !diastolic || !heart_rate) {
