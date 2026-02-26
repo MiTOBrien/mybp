@@ -39,6 +39,11 @@ const router = createRouter({
       name: 'HbpCauses',
       component: () => import('@/views/HbpCausesView.vue'),
     },
+    {
+      path: '/insights',
+      name: 'Insights',
+      component: () => import('@/views/InsightsView.vue'),
+    },
   ],
 })
 

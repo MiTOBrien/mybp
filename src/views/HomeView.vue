@@ -1,11 +1,13 @@
 <script setup>
 import { computed, nextTick, ref } from 'vue'
+import { RouterLink } from 'vue-router'
 import { useUserStore } from '@/stores/useUserStore'
 import BloodPressureModal from '@/components/BloodPressureModal.vue'
 import { groupReadings } from '@/utils/groupReadings'
 import { formatTime } from '@/utils/formatTime'
 import { formatDateKey } from '@/utils/formatDateKey'
 import { getBpColor } from '@/utils/bpColor'
+import WeeklySummaryCard from '@/components/WeeklySummaryCard.vue'
 
 const userStore = useUserStore()
 const email = userStore.user?.email
@@ -21,47 +23,6 @@ const displayName = computed(() => {
 })
 
 const grouped = computed(() => groupReadings(userStore.readings))
-
-const last7DaysReadings = computed(() => {
-  if (!userStore.user) return []
-
-  const now = new Date()
-  const sevenDaysAgo = new Date()
-  sevenDaysAgo.setDate(now.getDate() - 7)
-
-  return userStore.readings.filter((r) => {
-    const date = new Date(r.reading_time)
-    return date >= sevenDaysAgo && date <= now
-  })
-})
-
-const weeklyAvgSystolic = computed(() => {
-  const readings = last7DaysReadings.value
-  if (!readings.length) return null
-
-  const sum = readings.reduce((acc, r) => acc + r.systolic, 0)
-  return Math.round(sum / readings.length)
-})
-
-const weeklyAvgDiastolic = computed(() => {
-  const readings = last7DaysReadings.value
-  if (!readings.length) return null
-
-  const sum = readings.reduce((acc, r) => acc + r.diastolic, 0)
-  return Math.round(sum / readings.length)
-})
-
-const highReadingsCount = computed(() => {
-  const readings = last7DaysReadings.value
-  return readings.filter((r) => r.systolic >= 130 || r.diastolic >= 80).length
-})
-
-const medicationTakenCount = computed(() => {
-  const readings = last7DaysReadings.value
-  if (!readings.length) return 0
-
-  return readings.filter((r) => r.medication_taken).length
-})
 
 const editingReading = ref(null)
 
@@ -106,6 +67,14 @@ const confirmDelete = async (id) => {
 
   <p v-if="displayName">Welcome {{ displayName }}!</p>
 
+  <!-- Weekly Summary -->
+  <div>
+    <RouterLink to="/insights" class="button nav-button is-link insights-link"
+      >View Insights & Reports</RouterLink
+    >
+  </div>
+  <WeeklySummaryCard v-if="userStore.user" :readings="userStore.readings" :days="7" />
+
   <button
     v-if="userStore.user"
     @click="openBloodPressureModal"
@@ -113,31 +82,6 @@ const confirmDelete = async (id) => {
   >
     Add Blood Pressure Reading
   </button>
-
-  <!-- Weekly Summary -->
-  <div v-if="userStore.user" class="summary-card">
-    <div class="summary-header">Last 7 days</div>
-
-    <div class="summary-grid">
-      <div class="summary-item" @click="goToInsights">
-        <div class="label">Avg BP</div>
-        <div class="value">{{ weeklyAvgSystolic }}/{{ weeklyAvgDiastolic }}</div>
-      </div>
-
-      <div class="summary-item" @click="goToInsights">
-        <div class="label">High Readings <br />(systolic ≥ 130 or diastolic ≥ 80)</div>
-        <div class="value">{{ highReadingsCount }}</div>
-      </div>
-
-      <div class="summary-item" @click="goToInsights">
-        <div class="label">Medication Taken</div>
-        <div class="value">
-          {{ medicationTakenCount }}
-          {{ medicationTakenCount === 1 ? 'time' : 'times' }}
-        </div>
-      </div>
-    </div>
-  </div>
 
   <!-- BP Readings -->
   <div v-for="(day, date) in grouped" :key="date" class="day-card">
@@ -230,67 +174,10 @@ const confirmDelete = async (id) => {
 </template>
 
 <style scoped>
-/* BP Summary */
-.summary-card {
-  background: #f7f9fc;
-  border-radius: 12px;
-  padding: 12px 16px;
-  margin: 12px 0;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+.insights-link {
+  text-decoration: none;
+  font-size: .75rem;
 }
-
-.summary-header {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 8px;
-}
-
-.summary-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-}
-
-.summary-item {
-  background: white;
-  border-radius: 8px;
-  padding: 10px;
-  text-align: center;
-  cursor: pointer;
-  transition: background 0.15s;
-}
-
-.summary-item:hover {
-  background: #f0f4fa;
-}
-
-.label {
-  font-size: 0.75rem;
-  color: #666;
-  margin-bottom: 4px;
-}
-
-.value {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #222;
-}
-
-/* Mobile responsiveness */
-@media (max-width: 480px) {
-  .summary-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 360px) {
-  .summary-grid {
-    grid-template-columns: 1fr;
-  }
-}
-/* End of BP Summary */
-
 .icon-btn {
   background: none;
   border: none;
