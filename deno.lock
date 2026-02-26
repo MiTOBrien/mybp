@@ -20,6 +20,7 @@
         "npm:jsonwebtoken@^9.0.3",
         "npm:pinia@^3.0.4",
         "npm:prettier@3.8.1",
+        "npm:resend@^6.9.2",
         "npm:vite-plugin-vue-devtools@^8.0.5",
         "npm:vite@^7.3.1",
         "npm:vue-router@^5.0.1",
