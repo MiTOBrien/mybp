@@ -125,7 +125,7 @@ const confirmDelete = async (id) => {
       </div>
 
       <div class="summary-item" @click="goToInsights">
-        <div class="label">High Readings</div>
+        <div class="label">High Readings <br />(systolic ≥ 130 or diastolic ≥ 80)</div>
         <div class="value">{{ highReadingsCount }}</div>
       </div>
 
