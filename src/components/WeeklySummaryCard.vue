@@ -35,6 +35,12 @@ const avgDiastolic = computed(() => {
   return Math.round(sum / filteredReadings.value.length)
 })
 
+const avgHeartRate = computed(() => {
+  if (!filteredReadings.value.length) return null
+  const sum = filteredReadings.value.reduce((acc, r) => acc + r.heart_rate, 0)
+  return Math.round(sum / filteredReadings.value.length)
+})
+
 const highReadingsCount = computed(() =>
   filteredReadings.value.filter(
     (r) => r.systolic >= 130 || r.diastolic >= 80
@@ -55,6 +61,13 @@ const medicationTakenCount = computed(() =>
         <div class="label">Avg BP</div>
         <div class="value">
           {{ avgSystolic }}/{{ avgDiastolic }}
+        </div>
+      </div>
+
+      <div class="summary-item">
+        <div class="label">Avg Heart Rate</div>
+        <div class="value">
+          {{ avgHeartRate }} bpm
         </div>
       </div>
 
