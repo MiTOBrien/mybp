@@ -110,7 +110,7 @@ const chartOptions = computed(() => ({
   },
   yaxis: {
     min: 50,
-    max: 200,
+    max: 210,
   },
   annotations: {
     yaxis: [
@@ -191,8 +191,7 @@ const morningEveningInsight = computed(() => {
 <template>
   <main>
     <div class="privacy-container">
-      <h1>Track My BP</h1>
-      <h2>Insights and Reports</h2>
+      <h1>Insights and Reports</h1>
     </div>
 
     <!-- Toggle First -->
@@ -209,11 +208,12 @@ const morningEveningInsight = computed(() => {
     </div>
 
     <!-- Summary (driven by selectedRange) -->
-    <WeeklySummaryCard v-if="userStore.user" :readings="userStore.readings" :days="selectedRange" />
+    <h3 class="section-title">Summary</h3>
+    <WeeklySummaryCard v-if="userStore.user" :readings="filteredReadings" :days="selectedRange" />
 
     <!-- Morning vs Evening Insight -->
+    <h3 class="section-title">Morning vs Evening</h3>
     <div v-if="morningEveningInsight" class="insight-card">
-      <h3>Morning vs Evening Pattern</h3>
       <p>{{ morningEveningInsight }}</p>
 
       <div class="insight-details">
@@ -223,6 +223,7 @@ const morningEveningInsight = computed(() => {
     </div>
 
     <!-- Trend Chart -->
+    <h3 class="section-title">Blood Pressure Trends</h3>
     <label class="toggle-hr">
       <input type="checkbox" v-model="showHeartRate" />
       Show Heart Rate
@@ -242,15 +243,17 @@ const morningEveningInsight = computed(() => {
 .range-toggle {
   display: flex;
   gap: 8px;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
 .range-toggle button {
-  padding: 6px 12px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  background: white;
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: 1px solid #d6ddff;
+  background: #f5f7ff;
+  color: #2a2a2a;
   cursor: pointer;
+  transition: 0.2s;
 }
 
 .range-toggle button.active {
@@ -259,34 +262,52 @@ const morningEveningInsight = computed(() => {
   border-color: #4f7cff;
 }
 
-.data-note {
-  font-size: 0.85rem;
-  color: #666;
-  margin-top: 8px;
-}
-
-.trend-badge {
-  margin-bottom: 8px;
+.section-title {
+  margin: 24px 0 8px;
+  font-size: 1.1rem;
+  color: #2a2a2a;
   font-weight: 600;
 }
 
+.data-note {
+  font-size: 0.85rem;
+  color: #6b6b6b;
+  margin-top: 6px;
+}
+
+.trend-badge {
+  margin: 12px 0;
+  font-weight: 600;
+  color: #4f7cff;
+}
+
 .insight-card {
-  background: #f7f9ff;
-  border: 1px solid #e0e6ff;
-  border-radius: 12px;
-  padding: 16px;
-  margin-bottom: 16px;
+  background: #f5f7ff;
+  border: 1px solid #d6ddff;
+  border-radius: 14px;
+  padding: 18px;
+  margin-bottom: 20px;
 }
 
 .insight-card h3 {
-  margin-bottom: 6px;
+  margin-bottom: 8px;
+  color: #2a2a2a;
 }
 
 .insight-details {
-  margin-top: 8px;
+  margin-top: 10px;
   font-size: 0.9rem;
-  color: #555;
+  color: #6b6b6b;
   display: flex;
-  gap: 16px;
+  gap: 20px;
+}
+
+.toggle-hr {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 12px 0;
+  font-size: 0.9rem;
+  color: #2a2a2a;
 }
 </style>
