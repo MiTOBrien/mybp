@@ -42,6 +42,18 @@ const partialRangeMessage = computed(() => {
   return `${selectedRange.value}-day view selected — showing ${availableDaysInRange.value} days of available data.`
 })
 
+const avgSystolic = computed(() => {
+  if (!filteredReadings.value.length) return null
+  const sum = filteredReadings.value.reduce((acc, r) => acc + r.systolic, 0)
+  return Math.round(sum / filteredReadings.value.length)
+})
+
+const avgDiastolic = computed(() => {
+  if (!filteredReadings.value.length) return null
+  const sum = filteredReadings.value.reduce((acc, r) => acc + r.diastolic, 0)
+  return Math.round(sum / filteredReadings.value.length)
+})
+
 const chartSeries = computed(() => {
   const baseSeries = [
     {
@@ -79,6 +91,28 @@ const chartOptions = computed(() => ({
   yaxis: {
     min: 50,
     max: 200,
+  },
+  annotations: {
+    yaxis: [
+      {
+        y: avgSystolic.value,
+        borderColor: '#ff6b6b',
+        strokeDashArray: 6,
+        label: {
+          text: 'Avg Systolic',
+          style: { background: '#ff6b6b', color: '#fff' },
+        },
+      },
+      {
+        y: avgDiastolic.value,
+        borderColor: '#4f7cff',
+        strokeDashArray: 6,
+        label: {
+          text: 'Avg Diastolic',
+          style: { background: '#4f7cff', color: '#fff' },
+        },
+      },
+    ],
   },
   tooltip: {
     shared: true,
