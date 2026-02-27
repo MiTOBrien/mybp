@@ -5,6 +5,7 @@ import WeeklySummaryCard from '@/components/WeeklySummaryCard.vue'
 
 const userStore = useUserStore()
 const selectedRange = ref(7)
+const showHeartRate = ref(false)
 
 const filteredReadings = computed(() => {
   const now = new Date()
@@ -41,16 +42,27 @@ const partialRangeMessage = computed(() => {
   return `${selectedRange.value}-day view selected — showing ${availableDaysInRange.value} days of available data.`
 })
 
-const chartSeries = computed(() => [
-  {
-    name: 'Systolic',
-    data: filteredReadings.value.map((r) => r.systolic),
-  },
-  {
-    name: 'Diastolic',
-    data: filteredReadings.value.map((r) => r.diastolic),
-  },
-])
+const chartSeries = computed(() => {
+  const baseSeries = [
+    {
+      name: 'Systolic',
+      data: filteredReadings.value.map((r) => r.systolic),
+    },
+    {
+      name: 'Diastolic',
+      data: filteredReadings.value.map((r) => r.diastolic),
+    },
+  ]
+
+  if (showHeartRate.value) {
+    baseSeries.push({
+      name: 'Heart Rate',
+      data: filteredReadings.value.map((r) => r.heart_rate),
+    })
+  }
+
+  return baseSeries
+})
 
 const chartOptions = computed(() => ({
   chart: {
@@ -99,6 +111,10 @@ const chartOptions = computed(() => ({
     <WeeklySummaryCard v-if="userStore.user" :readings="userStore.readings" :days="selectedRange" />
 
     <!-- Trend Chart -->
+    <label class="toggle-hr">
+      <input type="checkbox" v-model="showHeartRate" />
+      Show Heart Rate
+    </label>
     <apexchart type="line" height="350" :options="chartOptions" :series="chartSeries" />
   </main>
 </template>
