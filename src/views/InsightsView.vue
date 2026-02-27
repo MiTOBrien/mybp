@@ -54,6 +54,26 @@ const avgDiastolic = computed(() => {
   return Math.round(sum / filteredReadings.value.length)
 })
 
+const trendDirection = computed(() => {
+  const readings = filteredReadings.value
+  if (readings.length < 4) return null
+
+  const segmentSize = Math.floor(readings.length / 4)
+
+  const firstSegment = readings.slice(0, segmentSize)
+  const lastSegment = readings.slice(-segmentSize)
+
+  const firstAvg = firstSegment.reduce((acc, r) => acc + r.systolic, 0) / firstSegment.length
+
+  const lastAvg = lastSegment.reduce((acc, r) => acc + r.systolic, 0) / lastSegment.length
+
+  const diff = lastAvg - firstAvg
+
+  if (diff > 3) return 'up'
+  if (diff < -3) return 'down'
+  return 'stable'
+})
+
 const chartSeries = computed(() => {
   const baseSeries = [
     {
@@ -119,6 +139,53 @@ const chartOptions = computed(() => ({
     intersect: false,
   },
 }))
+
+const morningReadings = computed(() => {
+  return filteredReadings.value.filter((r) => {
+    const hour = new Date(r.reading_time).getHours()
+    return hour >= 4 && hour < 12
+  })
+})
+
+const eveningReadings = computed(() => {
+  return filteredReadings.value.filter((r) => {
+    const hour = new Date(r.reading_time).getHours()
+    return hour >= 16 && hour <= 23
+  })
+})
+
+const avgMorningSystolic = computed(() => {
+  if (!morningReadings.value.length) return null
+  const sum = morningReadings.value.reduce((acc, r) => acc + r.systolic, 0)
+  return Math.round(sum / morningReadings.value.length)
+})
+
+const avgEveningSystolic = computed(() => {
+  if (!eveningReadings.value.length) return null
+  const sum = eveningReadings.value.reduce((acc, r) => acc + r.systolic, 0)
+  return Math.round(sum / eveningReadings.value.length)
+})
+
+const morningEveningDiff = computed(() => {
+  if (!avgMorningSystolic.value || !avgEveningSystolic.value) return null
+  return avgEveningSystolic.value - avgMorningSystolic.value
+})
+
+const morningEveningInsight = computed(() => {
+  if (morningEveningDiff.value === null) return null
+
+  const diff = morningEveningDiff.value
+
+  if (Math.abs(diff) < 3) {
+    return 'Morning and evening blood pressure are generally consistent.'
+  }
+
+  if (diff > 0) {
+    return `Evening systolic averages ${diff} mmHg higher than morning.`
+  }
+
+  return `Morning systolic averages ${Math.abs(diff)} mmHg higher than evening.`
+})
 </script>
 
 <template>
@@ -144,11 +211,29 @@ const chartOptions = computed(() => ({
     <!-- Summary (driven by selectedRange) -->
     <WeeklySummaryCard v-if="userStore.user" :readings="userStore.readings" :days="selectedRange" />
 
+    <!-- Morning vs Evening Insight -->
+    <div v-if="morningEveningInsight" class="insight-card">
+      <h3>Morning vs Evening Pattern</h3>
+      <p>{{ morningEveningInsight }}</p>
+
+      <div class="insight-details">
+        <span v-if="avgMorningSystolic">Morning Avg: {{ avgMorningSystolic }} mmHg</span>
+        <span v-if="avgEveningSystolic">Evening Avg: {{ avgEveningSystolic }} mmHg</span>
+      </div>
+    </div>
+
     <!-- Trend Chart -->
     <label class="toggle-hr">
       <input type="checkbox" v-model="showHeartRate" />
       Show Heart Rate
     </label>
+
+    <div v-if="trendDirection" class="trend-badge">
+      <span v-if="trendDirection === 'up'">⬆ Trending Up</span>
+      <span v-else-if="trendDirection === 'down'">⬇ Trending Down</span>
+      <span v-else>→ Stable</span>
+    </div>
+
     <apexchart type="line" height="350" :options="chartOptions" :series="chartSeries" />
   </main>
 </template>
@@ -178,5 +263,30 @@ const chartOptions = computed(() => ({
   font-size: 0.85rem;
   color: #666;
   margin-top: 8px;
+}
+
+.trend-badge {
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.insight-card {
+  background: #f7f9ff;
+  border: 1px solid #e0e6ff;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.insight-card h3 {
+  margin-bottom: 6px;
+}
+
+.insight-details {
+  margin-top: 8px;
+  font-size: 0.9rem;
+  color: #555;
+  display: flex;
+  gap: 16px;
 }
 </style>
