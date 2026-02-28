@@ -114,6 +114,38 @@ const chartOptions = computed(() => ({
   },
   annotations: {
     yaxis: [
+      // Normal
+      {
+        y: 0,
+        y2: 120,
+        fillColor: 'rgba(76, 175, 80, 0.05)',
+        opacity: 0.8,
+        borderColor: 'transparent',
+      },
+      // Elevated
+      {
+        y: 120,
+        y2: 130,
+        fillColor: 'rgba(255, 193, 7, 0.06)',
+        opacity: 0.8,
+        borderColor: 'transparent',
+      },
+      // Stage 1
+      {
+        y: 130,
+        y2: 140,
+        fillColor: 'rgba(255, 152, 0, 0.06)',
+        opacity: 0.8,
+        borderColor: 'transparent',
+      },
+      // Stage 2
+      {
+        y: 140,
+        y2: 210,
+        fillColor: 'rgba(229, 57, 53, 0.05)',
+        opacity: 0.8,
+        borderColor: 'transparent',
+      },
       {
         y: avgSystolic.value,
         borderColor: '#ff6b6b',
