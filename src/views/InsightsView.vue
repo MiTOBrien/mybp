@@ -186,6 +186,43 @@ const morningEveningInsight = computed(() => {
 
   return `Morning systolic averages ${Math.abs(diff)} mmHg higher than evening.`
 })
+
+const getCategory = (systolic, diastolic) => {
+  if (systolic >= 140 || diastolic >= 90) return 'stage2'
+  if (systolic >= 130 || diastolic >= 80) return 'stage1'
+  if (systolic >= 120 && diastolic < 80) return 'elevated'
+  return 'normal'
+}
+
+const categoryCounts = computed(() => {
+  const counts = {
+    normal: 0,
+    elevated: 0,
+    stage1: 0,
+    stage2: 0,
+  }
+
+  filteredReadings.value.forEach((r) => {
+    const category = getCategory(r.systolic, r.diastolic)
+    counts[category]++
+  })
+
+  return counts
+})
+
+const totalReadings = computed(() => filteredReadings.value.length)
+
+const categoryPercentages = computed(() => {
+  if (!totalReadings.value) return null
+
+  const percentages = {}
+
+  Object.entries(categoryCounts.value).forEach(([key, value]) => {
+    percentages[key] = Math.round((value / totalReadings.value) * 100)
+  })
+
+  return percentages
+})
 </script>
 
 <template>
@@ -219,6 +256,43 @@ const morningEveningInsight = computed(() => {
       <div class="insight-details">
         <span v-if="avgMorningSystolic">Morning Avg: {{ avgMorningSystolic }} mmHg</span>
         <span v-if="avgEveningSystolic">Evening Avg: {{ avgEveningSystolic }} mmHg</span>
+      </div>
+    </div>
+
+    <!-- Category Distribution -->
+    <h3 class="section-title">BP Category Distribution</h3>
+
+    <div v-if="categoryPercentages" class="category-card">
+      <div class="category-row">
+        <span>Normal</span>
+        <div class="bar">
+          <div class="fill normal" :style="{ width: categoryPercentages.normal + '%' }"></div>
+        </div>
+        <span>{{ categoryPercentages.normal }}%</span>
+      </div>
+
+      <div class="category-row">
+        <span>Elevated</span>
+        <div class="bar">
+          <div class="fill elevated" :style="{ width: categoryPercentages.elevated + '%' }"></div>
+        </div>
+        <span>{{ categoryPercentages.elevated }}%</span>
+      </div>
+
+      <div class="category-row">
+        <span>Stage 1</span>
+        <div class="bar">
+          <div class="fill stage1" :style="{ width: categoryPercentages.stage1 + '%' }"></div>
+        </div>
+        <span>{{ categoryPercentages.stage1 }}%</span>
+      </div>
+
+      <div class="category-row">
+        <span>Stage 2</span>
+        <div class="bar">
+          <div class="fill stage2" :style="{ width: categoryPercentages.stage2 + '%' }"></div>
+        </div>
+        <span>{{ categoryPercentages.stage2 }}%</span>
       </div>
     </div>
 
@@ -309,5 +383,53 @@ const morningEveningInsight = computed(() => {
   margin: 12px 0;
   font-size: 0.9rem;
   color: #2a2a2a;
+}
+
+.category-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  padding: 18px;
+  margin-bottom: 20px;
+}
+
+.category-row {
+  display: grid;
+  grid-template-columns: 80px 1fr 50px;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  font-size: 0.9rem;
+  color: var(--color-text-primary);
+}
+
+.bar {
+  height: 10px;
+  background: #e9eef2;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 0.4s ease;
+}
+
+/* Category Colors */
+.fill.normal {
+  background: var(--color-success);
+}
+
+.fill.elevated {
+  background: var(--color-warning);
+}
+
+.fill.stage1 {
+  background: #ff9800;
+}
+
+.fill.stage2 {
+  background: var(--color-danger);
 }
 </style>
