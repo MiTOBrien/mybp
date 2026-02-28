@@ -11,26 +11,29 @@ import { RouterLink } from 'vue-router'
         consult a healthcare professional regarding any health concerns.
       </p>
 
-      <!-- Educational Links -->
-      <div class="reference-links">
-        <RouterLink to="/hbp-causes">Causes of High Blood Pressure</RouterLink>
-        <span class="divider">•</span>
-        <RouterLink to="/hbp-management">Managing High Blood Pressure</RouterLink>
-      </div>
+      <!-- 3 Column Section -->
+      <div class="footer-grid">
+        <!-- Column 1: Venmo -->
+        <div class="footer-column donation">
+          <p class="column-title">Support Development</p>
+          <a href="https://venmo.com/michael-obrien-970" target="_blank" rel="noopener">
+            <img src="/venmo.png" alt="Venmo QR Code" />
+          </a>
+        </div>
 
-      <!-- Legal Links -->
-      <div class="legal-links">
-        <RouterLink to="/tos">Terms of Service</RouterLink>
-        <span class="divider">•</span>
-        <RouterLink to="/privacy-policy">Privacy Policy</RouterLink>
-      </div>
+        <!-- Column 2: Educational -->
+        <div class="footer-column">
+          <p class="column-title">Learn</p>
+          <RouterLink to="/hbp-causes">Causes of High Blood Pressure</RouterLink>
+          <RouterLink to="/hbp-management">Managing High Blood Pressure</RouterLink>
+        </div>
 
-      <!-- Donation Section -->
-      <div class="donation-section">
-        <p class="donation-text">
-          If you find this app helpful and would like to support continued development:
-        </p>
-        <img src="/venmo.png" alt="Venmo QR Code" />
+        <!-- Column 3: Legal -->
+        <div class="footer-column">
+          <p class="column-title">Legal</p>
+          <RouterLink to="/tos">Terms of Service</RouterLink>
+          <RouterLink to="/privacy-policy">Privacy Policy</RouterLink>
+        </div>
       </div>
 
       <p class="copyright">© {{ new Date().getFullYear() }} Track My BP. All rights reserved.</p>
