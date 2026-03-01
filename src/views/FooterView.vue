@@ -19,6 +19,7 @@ import { RouterLink } from 'vue-router'
           <a href="https://venmo.com/michael-obrien-970" target="_blank" rel="noopener">
             <img src="/venmo.png" alt="Venmo QR Code" />
           </a>
+          <p class="donation-caption">Scan/Tap/Click to donate via Venmo</p>
         </div>
 
         <!-- Column 2: Educational -->
