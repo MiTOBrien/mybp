@@ -84,6 +84,13 @@
   margin-top: 0.25rem;
 }
 
+/* Veteran Note */
+.veteran-note {
+  font-size: 0.8rem;
+  opacity: 0.75;
+  margin-top: 0.75rem;
+}
+
 /* Copyright */
 .copyright {
   font-size: 0.85rem;

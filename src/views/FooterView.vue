@@ -37,6 +37,8 @@ import { RouterLink } from 'vue-router'
         </div>
       </div>
 
+      <p class="veteran-note">Created and maintained by a U.S. military veteran.</p>
+
       <p class="copyright">© {{ new Date().getFullYear() }} Track My BP. All rights reserved.</p>
     </div>
   </footer>
