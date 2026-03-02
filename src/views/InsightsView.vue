@@ -330,16 +330,17 @@ const categoryPercentages = computed(() => {
 
     <!-- Trend Chart -->
     <h3 class="section-title">Blood Pressure Trends</h3>
-    <label class="toggle-hr">
-      <input type="checkbox" v-model="showHeartRate" />
-      Show Heart Rate
-    </label>
 
     <div v-if="trendDirection" class="trend-badge">
       <span v-if="trendDirection === 'up'">⬆ Trending Up</span>
       <span v-else-if="trendDirection === 'down'">⬇ Trending Down</span>
       <span v-else>→ Stable</span>
     </div>
+
+    <label class="toggle-hr">
+      <input type="checkbox" v-model="showHeartRate" />
+      Show Heart Rate
+    </label>
 
     <apexchart type="line" height="350" :options="chartOptions" :series="chartSeries" />
   </main>
@@ -368,8 +369,13 @@ const categoryPercentages = computed(() => {
   border-color: #4f7cff;
 }
 
+.range-toggle button:hover:not(.active) {
+  background: #eef2ff;
+  border-color: #c8d2ff;
+}
+
 .section-title {
-  margin: 24px 0 8px;
+  margin: 32px 0 10px;
   font-size: 1.1rem;
   color: #2a2a2a;
   font-weight: 600;
@@ -463,5 +469,14 @@ const categoryPercentages = computed(() => {
 
 .fill.stage2 {
   background: var(--color-danger);
+}
+
+@media (max-width: 480px) {
+  .bar {
+    height: 8px;
+  }
+  .category-row {
+    margin-bottom: 16px;
+  }
 }
 </style>
