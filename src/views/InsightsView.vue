@@ -60,18 +60,24 @@ const trendDirection = computed(() => {
 
   const segmentSize = Math.floor(readings.length / 4)
 
-  const firstSegment = readings.slice(0, segmentSize)
-  const lastSegment = readings.slice(-segmentSize)
+  const first = readings.slice(0, segmentSize)
+  const last = readings.slice(-segmentSize)
 
-  const firstAvg = firstSegment.reduce((acc, r) => acc + r.systolic, 0) / firstSegment.length
+  const avg = (arr, key) => arr.reduce((acc, r) => acc + r[key], 0) / arr.length
 
-  const lastAvg = lastSegment.reduce((acc, r) => acc + r.systolic, 0) / lastSegment.length
+  const sysDiff = avg(last, 'systolic') - avg(first, 'systolic')
+  const diaDiff = avg(last, 'diastolic') - avg(first, 'diastolic')
 
-  const diff = lastAvg - firstAvg
+  const classify = (diff) => {
+    if (diff > 3) return 'up'
+    if (diff < -3) return 'down'
+    return 'stable'
+  }
 
-  if (diff > 3) return 'up'
-  if (diff < -3) return 'down'
-  return 'stable'
+  return {
+    systolic: classify(sysDiff),
+    diastolic: classify(diaDiff),
+  }
 })
 
 const chartSeries = computed(() => {
@@ -332,9 +338,23 @@ const categoryPercentages = computed(() => {
     <h3 class="section-title">Blood Pressure Trends</h3>
 
     <div v-if="trendDirection" class="trend-badge">
-      <span v-if="trendDirection === 'up'">⬆ Trending Up</span>
-      <span v-else-if="trendDirection === 'down'">⬇ Trending Down</span>
-      <span v-else>→ Stable</span>
+      <p class="trend-label">Pattern detected</p>
+
+      <div class="trend-lines">
+        <span>
+          Systolic:
+          <strong v-if="trendDirection.systolic === 'up'">⬆ Up</strong>
+          <strong v-else-if="trendDirection.systolic === 'down'">⬇ Down</strong>
+          <strong v-else>→ Stable</strong>
+        </span>
+
+        <span>
+          Diastolic:
+          <strong v-if="trendDirection.diastolic === 'up'">⬆ Up</strong>
+          <strong v-else-if="trendDirection.diastolic === 'down'">⬇ Down</strong>
+          <strong v-else>→ Stable</strong>
+        </span>
+      </div>
     </div>
 
     <label class="toggle-hr">
@@ -388,9 +408,25 @@ const categoryPercentages = computed(() => {
 }
 
 .trend-badge {
-  margin: 12px 0;
+  background: #f5f7ff;
+  border: 1px solid #d6ddff;
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin: 16px 0;
+}
+
+.trend-label {
+  font-size: 0.85rem;
   font-weight: 600;
   color: #4f7cff;
+  margin-bottom: 6px;
+}
+
+.trend-lines {
+  display: flex;
+  gap: 20px;
+  font-size: 0.9rem;
+  color: #2a2a2a;
 }
 
 .insight-card {
