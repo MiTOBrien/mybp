@@ -12,7 +12,7 @@ const filteredReadings = computed(() => {
   const cutoff = new Date()
   cutoff.setDate(now.getDate() - selectedRange.value)
 
-  return userStore.readings
+  return userStore.allReadings
     .filter((r) => {
       const date = new Date(r.reading_time)
       return date >= cutoff && date <= now
@@ -366,5 +366,4 @@ const categoryPercentages = computed(() => {
   </main>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>

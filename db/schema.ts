@@ -1,4 +1,4 @@
-import { integer, pgTable, varchar, serial, text, timestamp, boolean } from 'drizzle-orm/pg-core'
+import { integer, pgTable, varchar, serial, text, timestamp, boolean, primaryKey } from 'drizzle-orm/pg-core'
 
 export const users = pgTable('users', {
   id: serial('id').primaryKey(),
@@ -36,12 +36,18 @@ export const symptoms = pgTable('symptoms', {
   name: text('name').notNull().unique(),
 })
 
-export const bloodpressureSymptoms = pgTable('bloodpressure_symptoms', {
-  id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
-  readingId: integer('reading_id')
-    .notNull()
-    .references(() => bloodpressure.id, { onDelete: 'cascade' }),
-  symptomId: integer('symptom_id')
-    .notNull()
-    .references(() => symptoms.id, { onDelete: 'cascade' }),
-})
+export const bloodpressureSymptoms = pgTable(
+  'bloodpressure_symptoms',
+  {
+    readingId: integer('reading_id')
+      .notNull()
+      .references(() => bloodpressure.id, { onDelete: 'cascade' }),
+
+    symptomId: integer('symptom_id')
+      .notNull()
+      .references(() => symptoms.id, { onDelete: 'cascade' }),
+  },
+  (table) => ({
+    pk: primaryKey(table.readingId, table.symptomId),
+  })
+)

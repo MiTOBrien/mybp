@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { nextTick, ref } from 'vue'
 
 export const useUserStore = defineStore('user', () => {
   // State
@@ -11,6 +11,8 @@ export const useUserStore = defineStore('user', () => {
   const isLoggedIn = ref(false)
   const showLoginModal = ref(false)
   const showRegisterModal = ref(false)
+  const recentReadings = ref([])
+  const allReadings = ref([])
 
   // NEW: readings state
   const readings = ref([])
@@ -49,11 +51,38 @@ export const useUserStore = defineStore('user', () => {
     name.value = ''
     isLoggedIn.value = false
     readings.value = [] // clear readings on logout
+    recentReadings.value = []
+    allReadings.value = []
 
     localStorage.removeItem('user')
   }
 
-  // NEW: fetchReadings action
+  async function fetchRecentReadings(days = 7) {
+    try {
+      const res = await fetch(`/.netlify/functions/get-readings?days=${days}`, {
+        headers: { Authorization: `Bearer ${token.value}` },
+      })
+      const data = await res.json()
+      recentReadings.value = data.readings || []
+    } catch (err) {
+      console.error('Error fetching recent readings:', err)
+      recentReadings.value = []
+    }
+  }
+
+  async function fetchAllReadings() {
+    try {
+      const res = await fetch(`/.netlify/functions/get-readings?all=true`, {
+        headers: { Authorization: `Bearer ${token.value}` },
+      })
+      const data = await res.json()
+      allReadings.value = data.readings || []
+    } catch (err) {
+      console.error('Error fetching all readings:', err)
+      allReadings.value = []
+    }
+  }
+
   async function fetchReadings() {
     try {
       const res = await fetch('/.netlify/functions/get-readings', {
@@ -80,8 +109,9 @@ export const useUserStore = defineStore('user', () => {
       const userData = JSON.parse(stored)
       login(userData)
 
-      // FIX: fetchShows() was wrong — should be fetchReadings()
-      fetchReadings()
+      fetchRecentReadings(7)
+      fetchAllReadings
+      // fetchReadings()
     }
   }
 
@@ -95,13 +125,17 @@ export const useUserStore = defineStore('user', () => {
     isLoggedIn,
     showLoginModal,
     showRegisterModal,
-    readings,
+    recentReadings,
+    allReadings,
+    // readings,
 
     // Actions
     login,
     setUser,
     logout,
     restoreFromLocalStorage,
-    fetchReadings,
+    fetchRecentReadings,
+    fetchAllReadings,
+    // fetchReadings,
   }
 })

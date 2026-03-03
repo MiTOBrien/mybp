@@ -2,7 +2,7 @@ import { neon } from '@netlify/neon'
 import { drizzle } from 'drizzle-orm/neon-http'
 import jwt from 'jsonwebtoken'
 import { bloodpressure } from '../../db/schema.js'
-import { eq, desc } from 'drizzle-orm'
+import { eq, desc, gte } from 'drizzle-orm'
 
 export default async (req) => {
   try {
@@ -25,11 +25,23 @@ export default async (req) => {
     const sql = neon(process.env.NETLIFY_DATABASE_URL)
     const db = drizzle(sql)
 
-    const readings = await db
-      .select()
-      .from(bloodpressure)
-      .where(eq(bloodpressure.user_id, userId))
-      .orderBy(desc(bloodpressure.reading_time))
+    // Read query params
+    const url = new URL(req.url)
+    const days = url.searchParams.get('days')
+    const all = url.searchParams.get('all')
+
+    let query = db.select().from(bloodpressure).where(eq(bloodpressure.user_id, userId))
+
+    // Apply days filter if provided
+    if (days && !all) {
+      const cutoff = new Date()
+      cutoff.setDate(cutoff.getDate() - Number(days))
+
+      query = query.where(gte(bloodpressure.reading_time, cutoff.toISOString()))
+    }
+
+    // Always order ASC for grouping logic
+    const readings = await query.orderBy(bloodpressure.reading_time)
 
     return Response.json({ readings })
   } catch (err) {

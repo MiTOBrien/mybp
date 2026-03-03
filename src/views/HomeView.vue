@@ -1,5 +1,5 @@
 <script setup>
-import { computed, nextTick, ref } from 'vue'
+import { computed, nextTick, onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useUserStore } from '@/stores/useUserStore'
 import BloodPressureModal from '@/components/BloodPressureModal.vue'
@@ -10,11 +10,10 @@ import { getBpColor } from '@/utils/bpColor'
 import WeeklySummaryCard from '@/components/WeeklySummaryCard.vue'
 
 const userStore = useUserStore()
-const email = userStore.user?.email
+
 const displayName = computed(() => {
   const email = userStore.user?.email
   if (!email) return null
-
   return email
     .split('@')[0]
     .split('.')
@@ -22,7 +21,20 @@ const displayName = computed(() => {
     .join(' ')
 })
 
-const grouped = computed(() => groupReadings(userStore.readings))
+/* 
+  Use ALL readings for the scrollable list.
+  This gives fast initial load (recentReadings)
+  and full history once allReadings finishes loading.
+*/
+const groupedDescending = computed(() => {
+  const g = groupReadings(userStore.allReadings)
+  return Object.fromEntries(Object.entries(g).reverse())
+})
+
+/* Show placeholder while full dataset is still loading */
+const isHydrating = computed(() => {
+  return userStore.allReadings.length === 0 && userStore.recentReadings.length > 0
+})
 
 const editingReading = ref(null)
 
@@ -44,8 +56,16 @@ const confirmDelete = async (id) => {
     body: JSON.stringify({ id }),
   })
 
-  await userStore.fetchReadings()
+  await userStore.fetchRecentReadings(7)
+  await userStore.fetchAllReadings()
 }
+
+onMounted(() => {
+  if (userStore.isLoggedIn) {
+    userStore.fetchRecentReadings(7)
+    userStore.fetchAllReadings()
+  }
+})
 </script>
 
 <template>
@@ -68,12 +88,13 @@ const confirmDelete = async (id) => {
   <p v-if="displayName">Welcome {{ displayName }}!</p>
 
   <!-- Weekly Summary -->
-  <div>
-    <RouterLink to="/insights" class="button nav-button is-link insights-link"
-      >View Insights & Reports</RouterLink
-    >
+  <div v-if="userStore.user">
+    <RouterLink to="/insights" class="button nav-button is-link insights-link">
+      View Insights & Reports
+    </RouterLink>
   </div>
-  <WeeklySummaryCard v-if="userStore.user" :readings="userStore.readings" :days="7" />
+
+  <WeeklySummaryCard v-if="userStore.user" :readings="userStore.recentReadings" :days="7" />
 
   <button
     v-if="userStore.user"
@@ -83,8 +104,11 @@ const confirmDelete = async (id) => {
     Add Blood Pressure Reading
   </button>
 
-  <!-- BP Readings -->
-  <div v-for="(day, date) in grouped" :key="date" class="day-card">
+  <!-- Loading placeholder while full history hydrates -->
+  <div v-if="isHydrating" class="loading-older">Loading older readings…</div>
+
+  <!-- Full grouped list -->
+  <div v-for="(day, date) in groupedDescending" :key="date" class="day-card">
     <h3 class="day-header">{{ formatDateKey(date) }}</h3>
 
     <!-- MORNING -->
@@ -93,7 +117,6 @@ const confirmDelete = async (id) => {
 
       <div class="reading-row">
         <div v-for="(r, i) in day.am" :key="i" class="reading-item">
-          <!-- TOP ROW -->
           <div class="reading-top-row">
             <button class="icon-btn delete" @click="confirmDelete(r.id)">
               <svg viewBox="0 0 24 24" class="icon">
@@ -118,6 +141,7 @@ const confirmDelete = async (id) => {
             <span class="reading-bp">{{ r.systolic }}/{{ r.diastolic }}</span>
             <span class="reading-hr">{{ r.heart_rate }} bpm</span>
           </div>
+
           <div v-if="r.medication_taken" class="medication-line">Medication Taken</div>
         </div>
       </div>
@@ -129,7 +153,6 @@ const confirmDelete = async (id) => {
 
       <div class="reading-row">
         <div v-for="(r, i) in day.pm" :key="i" class="reading-item">
-          <!-- TOP ROW -->
           <div class="reading-top-row">
             <button class="icon-btn delete" @click="confirmDelete(r.id)">
               <svg viewBox="0 0 24 24" class="icon">
@@ -154,6 +177,7 @@ const confirmDelete = async (id) => {
             <span class="reading-bp">{{ r.systolic }}/{{ r.diastolic }}</span>
             <span class="reading-hr">{{ r.heart_rate }} bpm</span>
           </div>
+
           <div v-if="r.medication_taken" class="medication-line">Medication Taken</div>
         </div>
       </div>
@@ -174,10 +198,19 @@ const confirmDelete = async (id) => {
 </template>
 
 <style scoped>
+.loading-older {
+  margin: 20px 0;
+  font-size: 0.9rem;
+  color: #666;
+  text-align: center;
+  font-style: italic;
+}
+
 .insights-link {
   text-decoration: none;
-  font-size: .75rem;
+  font-size: 0.75rem;
 }
+
 .icon-btn {
   background: none;
   border: none;
@@ -198,21 +231,18 @@ const confirmDelete = async (id) => {
   transform: scale(0.9);
 }
 
-/* Prevent wrapping of time, BP, and HR */
 .reading-time,
 .reading-bp,
 .reading-hr {
   white-space: nowrap;
 }
 
-/* Tighten spacing between items */
 .reading-item {
   display: flex;
   align-items: center;
-  gap: 6px; /* reduce from whatever it was */
+  gap: 6px;
 }
 
-/* Shrink text slightly on small screens */
 @media (max-width: 480px) {
   .reading-time,
   .reading-bp,
