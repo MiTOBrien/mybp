@@ -204,9 +204,26 @@ const avgEveningSystolic = computed(() => {
   return Math.round(sum / eveningReadings.value.length)
 })
 
+const avgMorningDiastolic = computed(() => {
+  if (!morningReadings.value.length) return null
+  const sum = morningReadings.value.reduce((acc, r) => acc + r.diastolic, 0)
+  return Math.round(sum / morningReadings.value.length)
+})
+
+const avgEveningDiastolic = computed(() => {
+  if (!eveningReadings.value.length) return null
+  const sum = eveningReadings.value.reduce((acc, r) => acc + r.diastolic, 0)
+  return Math.round(sum / eveningReadings.value.length)
+})
+
 const morningEveningDiff = computed(() => {
   if (!avgMorningSystolic.value || !avgEveningSystolic.value) return null
   return avgEveningSystolic.value - avgMorningSystolic.value
+})
+
+const morningEveningDiastolicDiff = computed(() => {
+  if (!avgMorningDiastolic.value || !avgEveningDiastolic.value) return null
+  return avgEveningDiastolic.value - avgMorningDiastolic.value
 })
 
 const morningEveningInsight = computed(() => {
@@ -223,6 +240,22 @@ const morningEveningInsight = computed(() => {
   }
 
   return `Morning systolic averages ${Math.abs(diff)} mmHg higher than evening.`
+})
+
+const morningEveningDiastolicInsight = computed(() => {
+  if (morningEveningDiastolicDiff.value === null) return null
+
+  const diff = morningEveningDiastolicDiff.value
+
+  if (Math.abs(diff) < 3) {
+    return 'Morning and evening diastolic pressures are generally consistent.'
+  }
+
+  if (diff > 0) {
+    return `Evening diastolic averages ${diff} mmHg higher than morning.`
+  }
+
+  return `Morning diastolic averages ${Math.abs(diff)} mmHg higher than evening.`
 })
 
 const getCategory = (systolic, diastolic) => {
@@ -290,10 +323,16 @@ const categoryPercentages = computed(() => {
     <h3 class="section-title">Morning vs Evening</h3>
     <div v-if="morningEveningInsight" class="insight-card">
       <p>{{ morningEveningInsight }}</p>
+      <p v-if="morningEveningDiastolicInsight">{{ morningEveningDiastolicInsight }}</p>
 
       <div class="insight-details">
-        <span v-if="avgMorningSystolic">Morning Avg: {{ avgMorningSystolic }} mmHg</span>
-        <span v-if="avgEveningSystolic">Evening Avg: {{ avgEveningSystolic }} mmHg</span>
+        <span v-if="avgMorningSystolic && avgMorningDiastolic">
+          Morning Avg: {{ avgMorningSystolic }}/{{ avgMorningDiastolic }} mmHg
+        </span>
+
+        <span v-if="avgEveningSystolic && avgEveningDiastolic">
+          Evening Avg: {{ avgEveningSystolic }}/{{ avgEveningDiastolic }} mmHg
+        </span>
       </div>
     </div>
 
