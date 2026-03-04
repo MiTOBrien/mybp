@@ -78,7 +78,8 @@ const submitReading = async () => {
 
     alert(props.editingReading ? 'Reading updated.' : 'Reading saved.')
 
-    await userStore.fetchReadings()
+    await userStore.fetchRecentReadings(7)
+    await userStore.fetchAllReadings()
     emit('close')
   } catch (error) {
     console.error('BP entry error:', error)
