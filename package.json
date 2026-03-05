@@ -23,6 +23,7 @@
     "resend": "^6.9.2",
     "vue": "^3.5.27",
     "vue-router": "^5.0.1",
+    "vue-toastification": "^2.0.0-rc.5",
     "vue3-apexcharts": "^1.10.0"
   },
   "devDependencies": {
