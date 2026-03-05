@@ -2,7 +2,9 @@
 import { ref } from 'vue'
 import { useRouter, RouterLink } from 'vue-router'
 import { useUserStore } from '@/stores/useUserStore'
+import { useToast } from 'vue-toastification'
 
+const toast = useToast()
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 const email = ref('')
 const password = ref('')
@@ -24,9 +26,6 @@ const goToForgotPassword = () => {
 
 const login = async () => {
   isLoading.value = true
-  console.log('Email:', email.value)
-  console.log('Password:', password.value)
-  console.log('API URL:', API_BASE_URL)
   try {
     const response = await fetch(`${API_BASE_URL}/login`, {
       method: 'POST',
@@ -63,17 +62,17 @@ const login = async () => {
     } else {
       const errorMessage =
         result.error || result.status?.message || 'Login failed. Please try again.'
-      alert(errorMessage)
+      toast.show(errorMessage, 'error')
     }
   } catch (error) {
     console.error('Login error:', error)
 
     if (error.name === 'TypeError' && error.message.includes('fetch')) {
-      alert(
+      toast.show(
         `Cannot connect to backend at ${API_BASE_URL}. Please check if your backend server is running.`,
       )
     } else {
-      alert(`An error occurred during login: ${error.message}`)
+      toast.show(`An error occurred during login: ${error.message}`, 'error')
     }
   } finally {
     isLoading.value = false
