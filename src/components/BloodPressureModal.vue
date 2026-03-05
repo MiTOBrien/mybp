@@ -2,9 +2,11 @@
 import { ref, onMounted } from 'vue'
 import { useUserStore } from '@/stores/useUserStore'
 import { getLocalDateTimeString } from '@/utils/getLocalDateTimeString'
+import { useToastStore } from '@/stores/useToastStore'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 const userStore = useUserStore()
+const toast = useToastStore()
 
 // Props: if editingReading is provided, we are in EDIT mode
 const props = defineProps({
@@ -72,18 +74,17 @@ const submitReading = async () => {
     const result = await response.json()
 
     if (!response.ok) {
-      alert(result.error || 'Unable to save reading.')
+      toast.show(result.error || 'Unable to save reading.', 'error')
       return
     }
 
-    alert(props.editingReading ? 'Reading updated.' : 'Reading saved.')
+    toast.show(props.editingReading ? 'Reading updated.' : 'Reading saved.', 'success')
 
     await userStore.fetchRecentReadings(7)
     await userStore.fetchAllReadings()
     emit('close')
   } catch (error) {
-    console.error('BP entry error:', error)
-    alert('An error occurred while saving your reading.')
+    toast.show('An error occurred while saving your reading.', 'error')
   } finally {
     isLoading.value = false
   }

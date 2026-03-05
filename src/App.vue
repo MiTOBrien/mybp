@@ -3,6 +3,7 @@ import { useUserStore } from '@/stores/useUserStore'
 import { RouterView } from 'vue-router'
 import HeaderView from './views/HeaderView.vue'
 import FooterView from './views/FooterView.vue'
+import Toast from '@/components/Toast.vue'
 
 const userStore = useUserStore()
 userStore.restoreFromLocalStorage()
@@ -17,6 +18,7 @@ userStore.restoreFromLocalStorage()
   <main>
     <div class="wrapper">
       <RouterView />
+      <Toast />
     </div>
   </main>
   <footer>
