@@ -7,13 +7,11 @@ import { eq } from 'drizzle-orm'
 export default async function (request) {
   try {
     const raw = await request.text()
-    console.log('RAW BODY:', raw)
 
     let body = {}
     try {
       body = raw ? JSON.parse(raw) : {}
     } catch (e) {
-      console.log('JSON PARSE ERROR:', e)
       return new Response(JSON.stringify({ error: 'Invalid JSON' }), { status: 400 })
     }
 
