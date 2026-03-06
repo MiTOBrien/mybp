@@ -29,7 +29,7 @@ const openLogin = () => {
 
 const register = async () => {
   if (!isPasswordValid.value) {
-    alert('Password does not meet complexity requirements')
+    toast.error('Password does not meet complexity requirements')
     return
   }
 
@@ -72,7 +72,6 @@ const register = async () => {
       toast.error(data.error || 'Registration failed')
     }
   } catch (error) {
-    console.error(error)
     toast.error('An error occurred during registration')
   }
 }
