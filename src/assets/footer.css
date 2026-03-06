@@ -87,6 +87,7 @@
 /* Veteran Note */
 .veteran-note {
   font-size: 0.8rem;
+  font-weight: bolder;
   opacity: 0.75;
   margin-top: 0.75rem;
 }
