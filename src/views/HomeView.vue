@@ -198,6 +198,19 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.day-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* centers content horizontally */
+  max-width: 1000px;
+  margin: 20px auto;
+}
+
+.reading-group {
+  width: 100%;
+  max-width: 500px; /* keeps content from stretching too wide */
+}
+
 .loading-older {
   margin: 20px 0;
   font-size: 0.9rem;
