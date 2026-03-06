@@ -2,9 +2,13 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/useUserStore'
+import { useToast } from 'vue-toastification'
 import { PASSWORD_REGEX, isValidPassword } from '@/utils/passwordRules'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
+const router = useRouter()
+const userStore = useUserStore()
+const toast = useToast()
 const email = ref('')
 const password = ref('')
 const showPassword = ref(false)
@@ -22,8 +26,6 @@ const openLogin = () => {
   emit('open-login')
 }
 
-const router = useRouter()
-const userStore = useUserStore()
 
 const register = async () => {
   if (!isPasswordValid.value) {
@@ -32,12 +34,12 @@ const register = async () => {
   }
 
   if (!doPasswordsMatch.value) {
-    alert('Passwords do not match')
+    toast.error('Passwords do not match')
     return
   }
 
   if (!acceptedTOS.value) {
-    alert('You must acknowledge the Terms of Service to register.')
+    toast.error('You must acknowledge the Terms of Service to register.')
     return
   }
 
@@ -64,14 +66,14 @@ const register = async () => {
     const data = await response.json()
 
     if (response.ok) {
-      alert('Registration successful! Please login.')
+      toast.success('Registration successful! Please login.')
       userStore.showRegisterModal = false
     } else {
-      alert(data.error || 'Registration failed')
+      toast.error(data.error || 'Registration failed')
     }
   } catch (error) {
     console.error(error)
-    alert('An error occurred during registration')
+    toast.error('An error occurred during registration')
   }
 }
 </script>
