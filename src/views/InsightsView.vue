@@ -294,6 +294,44 @@ const categoryPercentages = computed(() => {
 
   return percentages
 })
+
+// Printing configuration
+const dailyAverages = computed(() => {
+  const grouped = {}
+
+  userStore.readings.forEach((r) => {
+    const date = r.date
+    if (!grouped[date]) {
+      grouped[date] = { morning: [], evening: [] }
+    }
+    if (r.period === 'morning') grouped[date].morning.push(r)
+    if (r.period === 'evening') grouped[date].evening.push(r)
+  })
+
+  const avg = (arr) => {
+    if (!arr.length) return null
+    const s = Math.round(arr.reduce((t, r) => t + r.systolic, 0) / arr.length)
+    const d = Math.round(arr.reduce((t, r) => t + r.diastolic, 0) / arr.length)
+    return `${s}/${d}`
+  }
+
+  return Object.keys(grouped)
+    .sort((a, b) => new Date(b) - new Date(a))
+    .map((date) => {
+      const m = grouped[date].morning
+      const e = grouped[date].evening
+      const all = [...m, ...e]
+
+      return {
+        date,
+        morningAvg: avg(m),
+        morningCount: m.length,
+        eveningAvg: avg(e),
+        eveningCount: e.length,
+        dailyAvg: avg(all),
+      }
+    })
+})
 </script>
 
 <template>
@@ -403,6 +441,37 @@ const categoryPercentages = computed(() => {
 
     <apexchart type="line" height="350" :options="chartOptions" :series="chartSeries" />
   </main>
+
+  <!-- Printing configuration -->
+  <section class="insights-section">
+    <h2>Daily Averages</h2>
+
+    <div class="daily-table-wrapper">
+      <table class="daily-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Morning Avg</th>
+            <th>AM Count</th>
+            <th>Evening Avg</th>
+            <th>PM Count</th>
+            <th>Daily Avg</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr v-for="row in dailyAverages" :key="row.date">
+            <td>{{ row.date }}</td>
+            <td>{{ row.morningAvg ?? '—' }}</td>
+            <td>{{ row.morningCount }}</td>
+            <td>{{ row.eveningAvg ?? '—' }}</td>
+            <td>{{ row.eveningCount }}</td>
+            <td>{{ row.dailyAvg ?? '—' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
 </template>
 
 <style scoped></style>
