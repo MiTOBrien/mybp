@@ -1,5 +1,5 @@
 <script setup>
-import { computed, nextTick, onMounted, ref } from 'vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useUserStore } from '@/stores/useUserStore'
 import BloodPressureModal from '@/components/BloodPressureModal.vue'
@@ -66,6 +66,24 @@ onMounted(() => {
     userStore.fetchAllReadings()
   }
 })
+
+watch(
+  () => userStore.recentReadings,
+  (val) => {
+    const meds = val.filter((r) => r.medication_taken)
+    console.log('Recent readings count:', val.length)
+    console.log('Medication true count:', meds.length)
+    console.table(
+      meds.map((r) => ({
+        reading_time: r.reading_time,
+        systolic: r.systolic,
+        diastolic: r.diastolic,
+        medication_taken: r.medication_taken,
+      })),
+    )
+  },
+  { immediate: true },
+)
 </script>
 
 <template>

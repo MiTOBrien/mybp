@@ -12,16 +12,8 @@ const props = defineProps({
   },
 })
 
-const filteredReadings = computed(() => {
-  const now = new Date()
-  const cutoff = new Date()
-  cutoff.setDate(now.getDate() - props.days)
-
-  return props.readings.filter((r) => {
-    const date = new Date(r.reading_time)
-    return date >= cutoff && date <= now
-  })
-})
+// No filtering here — parent passes the correct dataset
+const filteredReadings = computed(() => props.readings)
 
 const avgSystolic = computed(() => {
   if (!filteredReadings.value.length) return null
@@ -41,14 +33,12 @@ const avgHeartRate = computed(() => {
   return Math.round(sum / filteredReadings.value.length)
 })
 
-const highReadingsCount = computed(() =>
-  filteredReadings.value.filter(
-    (r) => r.systolic >= 130 || r.diastolic >= 80
-  ).length
+const highReadingsCount = computed(
+  () => filteredReadings.value.filter((r) => r.systolic >= 130 || r.diastolic >= 80).length,
 )
 
-const medicationTakenCount = computed(() =>
-  filteredReadings.value.filter((r) => r.medication_taken).length
+const medicationTakenCount = computed(
+  () => filteredReadings.value.filter((r) => r.medication_taken).length,
 )
 </script>
 
@@ -59,16 +49,12 @@ const medicationTakenCount = computed(() =>
     <div class="summary-grid">
       <div class="summary-item">
         <div class="label">Avg BP</div>
-        <div class="value">
-          {{ avgSystolic }}/{{ avgDiastolic }}
-        </div>
+        <div class="value">{{ avgSystolic }}/{{ avgDiastolic }}</div>
       </div>
 
       <div class="summary-item">
         <div class="label">Avg Heart Rate</div>
-        <div class="value">
-          {{ avgHeartRate }} bpm
-        </div>
+        <div class="value">{{ avgHeartRate }} bpm</div>
       </div>
 
       <div class="summary-item">

@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useUserStore } from '@/stores/useUserStore'
 import WeeklySummaryCard from '@/components/WeeklySummaryCard.vue'
 
@@ -7,18 +7,11 @@ const userStore = useUserStore()
 const selectedRange = ref(7)
 const showHeartRate = ref(false)
 
-const filteredReadings = computed(() => {
-  const now = new Date()
-  const cutoff = new Date()
-  cutoff.setDate(now.getDate() - selectedRange.value)
-
-  return userStore.allReadings
-    .filter((r) => {
-      const date = new Date(r.reading_time)
-      return date >= cutoff && date <= now
-    })
-    .sort((a, b) => new Date(a.reading_time) - new Date(b.reading_time))
+watch(selectedRange, () => {
+  userStore.fetchRecentReadings(selectedRange.value)
 })
+
+const filteredReadings = computed(() => userStore.recentReadings)
 
 const availableDaysInRange = computed(() => {
   if (!filteredReadings.value.length) return 0
@@ -296,42 +289,42 @@ const categoryPercentages = computed(() => {
 })
 
 // Printing configuration
-const dailyAverages = computed(() => {
-  const grouped = {}
+// const dailyAverages = computed(() => {
+//   const grouped = {}
 
-  userStore.readings.forEach((r) => {
-    const date = r.date
-    if (!grouped[date]) {
-      grouped[date] = { morning: [], evening: [] }
-    }
-    if (r.period === 'morning') grouped[date].morning.push(r)
-    if (r.period === 'evening') grouped[date].evening.push(r)
-  })
+//   userStore.readings.forEach((r) => {
+//     const date = r.date
+//     if (!grouped[date]) {
+//       grouped[date] = { morning: [], evening: [] }
+//     }
+//     if (r.period === 'morning') grouped[date].morning.push(r)
+//     if (r.period === 'evening') grouped[date].evening.push(r)
+//   })
 
-  const avg = (arr) => {
-    if (!arr.length) return null
-    const s = Math.round(arr.reduce((t, r) => t + r.systolic, 0) / arr.length)
-    const d = Math.round(arr.reduce((t, r) => t + r.diastolic, 0) / arr.length)
-    return `${s}/${d}`
-  }
+//   const avg = (arr) => {
+//     if (!arr.length) return null
+//     const s = Math.round(arr.reduce((t, r) => t + r.systolic, 0) / arr.length)
+//     const d = Math.round(arr.reduce((t, r) => t + r.diastolic, 0) / arr.length)
+//     return `${s}/${d}`
+//   }
 
-  return Object.keys(grouped)
-    .sort((a, b) => new Date(b) - new Date(a))
-    .map((date) => {
-      const m = grouped[date].morning
-      const e = grouped[date].evening
-      const all = [...m, ...e]
+//   return Object.keys(grouped)
+//     .sort((a, b) => new Date(b) - new Date(a))
+//     .map((date) => {
+//       const m = grouped[date].morning
+//       const e = grouped[date].evening
+//       const all = [...m, ...e]
 
-      return {
-        date,
-        morningAvg: avg(m),
-        morningCount: m.length,
-        eveningAvg: avg(e),
-        eveningCount: e.length,
-        dailyAvg: avg(all),
-      }
-    })
-})
+//       return {
+//         date,
+//         morningAvg: avg(m),
+//         morningCount: m.length,
+//         eveningAvg: avg(e),
+//         eveningCount: e.length,
+//         dailyAvg: avg(all),
+//       }
+//     })
+// })
 </script>
 
 <template>
@@ -443,7 +436,7 @@ const dailyAverages = computed(() => {
   </main>
 
   <!-- Printing configuration -->
-  <section class="insights-section">
+  <!-- <section class="insights-section">
     <h2>Daily Averages</h2>
 
     <div class="daily-table-wrapper">
@@ -471,7 +464,7 @@ const dailyAverages = computed(() => {
         </tbody>
       </table>
     </div>
-  </section>
+  </section> -->
 </template>
 
 <style scoped></style>
