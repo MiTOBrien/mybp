@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { nextTick, ref } from 'vue'
+import { ref } from 'vue'
 
 export const useUserStore = defineStore('user', () => {
   // State
@@ -11,31 +11,39 @@ export const useUserStore = defineStore('user', () => {
   const isLoggedIn = ref(false)
   const showLoginModal = ref(false)
   const showRegisterModal = ref(false)
+
+  // Readings
   const recentReadings = ref([])
   const allReadings = ref([])
 
-  // NEW: readings state
-  const readings = ref([])
-
-  // Actions
+  // -----------------------------
+  // LOGIN
+  // -----------------------------
   async function login(userData) {
     token.value = userData.token
-    user.value = userData
     id.value = userData.id
     email.value = userData.email
     name.value = userData.name
+    user.value = userData
     isLoggedIn.value = true
     showLoginModal.value = false
     showRegisterModal.value = false
 
+    // Store ONLY auth + profile info
     localStorage.setItem(
       'user',
       JSON.stringify({
-        ...userData,
+        id: id.value,
+        email: email.value,
+        name: name.value,
+        token: token.value,
       }),
     )
   }
 
+  // -----------------------------
+  // SET USER (used after refresh)
+  // -----------------------------
   function setUser(userData) {
     const currentToken = token.value
     login({
@@ -44,19 +52,28 @@ export const useUserStore = defineStore('user', () => {
     })
   }
 
+  // -----------------------------
+  // LOGOUT
+  // -----------------------------
   function logout() {
     token.value = null
     id.value = null
     email.value = ''
     name.value = ''
+    user.value = null
     isLoggedIn.value = false
-    readings.value = [] // clear readings on logout
+
+    // Clear readings
     recentReadings.value = []
     allReadings.value = []
 
+    // Clear localStorage
     localStorage.removeItem('user')
   }
 
+  // -----------------------------
+  // FETCH RECENT READINGS
+  // -----------------------------
   async function fetchRecentReadings(days = 7) {
     try {
       const res = await fetch(`/.netlify/functions/get-readings?days=${days}`, {
@@ -70,6 +87,9 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
+  // -----------------------------
+  // FETCH ALL READINGS
+  // -----------------------------
   async function fetchAllReadings() {
     try {
       const res = await fetch(`/.netlify/functions/get-readings?all=true`, {
@@ -83,36 +103,26 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
-  async function fetchReadings() {
-    try {
-      const res = await fetch('/.netlify/functions/get-readings', {
-        headers: {
-          Authorization: `Bearer ${token.value}`,
-        },
-      })
-
-      if (!res.ok) {
-        throw new Error('Failed to fetch readings')
-      }
-
-      const data = await res.json()
-      readings.value = data.readings || []
-    } catch (err) {
-      console.error('Error fetching readings:', err)
-      readings.value = []
-    }
-  }
-
+  // -----------------------------
+  // RESTORE FROM LOCAL STORAGE
+  // -----------------------------
   function restoreFromLocalStorage() {
     const stored = localStorage.getItem('user')
-    if (stored) {
-      const userData = JSON.parse(stored)
-      login(userData)
+    if (!stored) return
 
-      fetchRecentReadings(7)
-      fetchAllReadings
-      // fetchReadings()
-    }
+    const userData = JSON.parse(stored)
+
+    // Restore ONLY auth + profile fields
+    token.value = userData.token
+    id.value = userData.id
+    email.value = userData.email
+    name.value = userData.name
+    user.value = userData
+    isLoggedIn.value = true
+
+    // Fetch fresh readings from backend
+    fetchRecentReadings(7)
+    fetchAllReadings()
   }
 
   return {
@@ -127,7 +137,6 @@ export const useUserStore = defineStore('user', () => {
     showRegisterModal,
     recentReadings,
     allReadings,
-    // readings,
 
     // Actions
     login,
@@ -136,6 +145,5 @@ export const useUserStore = defineStore('user', () => {
     restoreFromLocalStorage,
     fetchRecentReadings,
     fetchAllReadings,
-    // fetchReadings,
   }
 })
