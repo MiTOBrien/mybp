@@ -289,42 +289,146 @@ const categoryPercentages = computed(() => {
 })
 
 // Printing configuration
-// const dailyAverages = computed(() => {
-//   const grouped = {}
+// -----------------------------------------------------
+// EXPORT STATE
+// -----------------------------------------------------
 
-//   userStore.readings.forEach((r) => {
-//     const date = r.date
-//     if (!grouped[date]) {
-//       grouped[date] = { morning: [], evening: [] }
-//     }
-//     if (r.period === 'morning') grouped[date].morning.push(r)
-//     if (r.period === 'evening') grouped[date].evening.push(r)
-//   })
+// Default: Daily Readings checked
+const selectedSections = ref({
+  readings: true,
+  summary: false,
+  morningEvening: false,
+  categoryDistribution: false,
+  trendChart: false,
+})
 
-//   const avg = (arr) => {
-//     if (!arr.length) return null
-//     const s = Math.round(arr.reduce((t, r) => t + r.systolic, 0) / arr.length)
-//     const d = Math.round(arr.reduce((t, r) => t + r.diastolic, 0) / arr.length)
-//     return `${s}/${d}`
-//   }
+// -----------------------------------------------------
+// FILTER READINGS BY DATE RANGE
+// -----------------------------------------------------
 
-//   return Object.keys(grouped)
-//     .sort((a, b) => new Date(b) - new Date(a))
-//     .map((date) => {
-//       const m = grouped[date].morning
-//       const e = grouped[date].evening
-//       const all = [...m, ...e]
+function filterByDays(readings, days) {
+  if (!days) return readings // null = all data
 
-//       return {
-//         date,
-//         morningAvg: avg(m),
-//         morningCount: m.length,
-//         eveningAvg: avg(e),
-//         eveningCount: e.length,
-//         dailyAvg: avg(all),
-//       }
-//     })
-// })
+  const cutoff = new Date()
+  cutoff.setDate(cutoff.getDate() - days)
+
+  return readings.filter((r) => new Date(r.reading_time) >= cutoff)
+}
+
+const exportReadings = computed(() => {
+  return filterByDays(userStore.allReadings, selectedRange.value)
+})
+
+// -----------------------------------------------------
+// DAILY AVERAGES (uses exportReadings)
+// -----------------------------------------------------
+
+const dailyAverages = computed(() => {
+  const grouped = {}
+
+  exportReadings.value.forEach((r) => {
+    const date = r.date
+    if (!grouped[date]) {
+      grouped[date] = { morning: [], evening: [] }
+    }
+    if (r.period === 'morning') grouped[date].morning.push(r)
+    if (r.period === 'evening') grouped[date].evening.push(r)
+  })
+
+  const avg = (arr) => {
+    if (!arr.length) return null
+    const s = Math.round(arr.reduce((t, r) => t + r.systolic, 0) / arr.length)
+    const d = Math.round(arr.reduce((t, r) => t + r.diastolic, 0) / arr.length)
+    return `${s}/${d}`
+  }
+
+  return Object.keys(grouped)
+    .sort((a, b) => new Date(b) - new Date(a))
+    .map((date) => {
+      const m = grouped[date].morning
+      const e = grouped[date].evening
+      const all = [...m, ...e]
+
+      return {
+        date,
+        morningAvg: avg(m),
+        morningCount: m.length,
+        eveningAvg: avg(e),
+        eveningCount: e.length,
+        dailyAvg: avg(all),
+      }
+    })
+})
+
+// -----------------------------------------------------
+// MORNING VS EVENING SUMMARY (uses exportReadings)
+// -----------------------------------------------------
+
+const morningEveningSummary = computed(() => {
+  const morning = exportReadings.value.filter((r) => r.period === 'morning')
+  const evening = exportReadings.value.filter((r) => r.period === 'evening')
+
+  const avg = (arr) => {
+    if (!arr.length) return null
+    const s = Math.round(arr.reduce((t, r) => t + r.systolic, 0) / arr.length)
+    const d = Math.round(arr.reduce((t, r) => t + r.diastolic, 0) / arr.length)
+    return `${s}/${d}`
+  }
+
+  return {
+    morningAvg: avg(morning),
+    morningCount: morning.length,
+    eveningAvg: avg(evening),
+    eveningCount: evening.length,
+  }
+})
+
+// -----------------------------------------------------
+// CATEGORY DISTRIBUTION (uses exportReadings)
+// -----------------------------------------------------
+
+const categoryDistribution = computed(() => {
+  const categories = {
+    normal: 0,
+    elevated: 0,
+    stage1: 0,
+    stage2: 0,
+    crisis: 0,
+  }
+
+  exportReadings.value.forEach((r) => {
+    const s = r.systolic
+    const d = r.diastolic
+
+    if (s < 120 && d < 80) categories.normal++
+    else if (s < 130 && d < 80) categories.elevated++
+    else if (s < 140 || d < 90) categories.stage1++
+    else if (s < 180 || d < 120) categories.stage2++
+    else categories.crisis++
+  })
+
+  const total = exportReadings.value.length || 1
+
+  return {
+    normal: Math.round((categories.normal / total) * 100),
+    elevated: Math.round((categories.elevated / total) * 100),
+    stage1: Math.round((categories.stage1 / total) * 100),
+    stage2: Math.round((categories.stage2 / total) * 100),
+    crisis: Math.round((categories.crisis / total) * 100),
+  }
+})
+
+// -----------------------------------------------------
+// TREND CHART DATA (systolic/diastolic only)
+// -----------------------------------------------------
+
+const trendChartData = computed(() => {
+  return {
+    systolic: exportReadings.value.map((r) => r.systolic),
+    diastolic: exportReadings.value.map((r) => r.diastolic),
+    labels: exportReadings.value.map((r) => r.date),
+  }
+})
 </script>
 
 <template>
@@ -434,37 +538,6 @@ const categoryPercentages = computed(() => {
 
     <apexchart type="line" height="350" :options="chartOptions" :series="chartSeries" />
   </main>
-
-  <!-- Printing configuration -->
-  <!-- <section class="insights-section">
-    <h2>Daily Averages</h2>
-
-    <div class="daily-table-wrapper">
-      <table class="daily-table">
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Morning Avg</th>
-            <th>AM Count</th>
-            <th>Evening Avg</th>
-            <th>PM Count</th>
-            <th>Daily Avg</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <tr v-for="row in dailyAverages" :key="row.date">
-            <td>{{ row.date }}</td>
-            <td>{{ row.morningAvg ?? '—' }}</td>
-            <td>{{ row.morningCount }}</td>
-            <td>{{ row.eveningAvg ?? '—' }}</td>
-            <td>{{ row.eveningCount }}</td>
-            <td>{{ row.dailyAvg ?? '—' }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section> -->
 </template>
 
 <style scoped></style>
